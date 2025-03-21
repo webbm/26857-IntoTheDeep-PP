@@ -4,6 +4,7 @@ import java.text.SimpleDateFormat
 // build.gradle in FtcRobotController
 //
 apply plugin: 'com.android.library'
+apply plugin: 'kotlin-android'
 
 android {
 
@@ -24,7 +25,16 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
+    
+    kotlinOptions {
+        jvmTarget = JavaVersion.VERSION_1_8.toString()
+    }
+    
     namespace = 'com.qualcomm.ftcrobotcontroller'
 }
 
 apply from: '../build.dependencies.gradle'
+
+dependencies {
+    implementation 'org.jetbrains.kotlin:kotlin-stdlib:1.9.20'
+}
