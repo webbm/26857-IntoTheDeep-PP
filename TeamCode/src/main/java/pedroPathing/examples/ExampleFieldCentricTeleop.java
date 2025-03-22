@@ -3,28 +3,28 @@ package pedroPathing.examples;
 import com.pedropathing.follower.Follower;
 import com.pedropathing.localization.Pose;
 import com.pedropathing.util.Constants;
-import  com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-import pedroPathing.constants.FConstants;
-import pedroPathing.constants.LConstants;
-
 /**
- * This is an example teleop that showcases movement and field-centric driving.
+ * This is an abstract example teleop that showcases movement and field-centric driving.
  *
  * @author Baron Henderson - 20077 The Indubitables
- * @version 2.0, 12/30/2024
+ * @version 3.0, 3/22/2025
  */
+public abstract class ExampleFieldCentricTeleop extends OpMode {
+    protected Follower follower;
+    protected final Pose startPose = new Pose(0,0,0);
 
-@TeleOp(name = "Example Field-Centric Teleop", group = "Examples")
-public class ExampleFieldCentricTeleop extends OpMode {
-    private Follower follower;
-    private final Pose startPose = new Pose(0,0,0);
+    /**
+     * Set the constants for this teleop mode
+     */
+    protected abstract void setConstants();
 
     /** This method is call once when init is played, it initializes the follower **/
     @Override
     public void init() {
-        Constants.setConstants(FConstants.class, LConstants.class);
+        setConstants();
         follower = new Follower(hardwareMap);
         follower.setStartingPose(startPose);
     }

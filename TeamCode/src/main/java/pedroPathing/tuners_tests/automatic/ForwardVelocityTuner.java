@@ -13,8 +13,8 @@ import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.pedropathing.util.Constants;
-import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.configuration.typecontainers.MotorConfigurationType;
@@ -28,11 +28,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import pedroPathing.constants.FConstants;
-import pedroPathing.constants.LConstants;
-
 /**
- * This is the ForwardVelocityTuner autonomous follower OpMode. This runs the robot forwards at max
+ * This is the abstract ForwardVelocityTuner autonomous follower OpMode. This runs the robot forwards at max
  * power until it reaches some specified distance. It records the most recent velocities, and on
  * reaching the end of the distance, it averages them and prints out the velocity obtained. It is
  * recommended to run this multiple times on a full battery to get the best results. What this does
@@ -44,27 +41,31 @@ import pedroPathing.constants.LConstants;
  * @author Anyi Lin - 10158 Scott's Bots
  * @author Aaron Yang - 10158 Scott's Bots
  * @author Harrison Womack - 10158 Scott's Bots
- * @version 1.0, 3/13/2024
+ * @version 2.0, 3/22/2025
  */
 @Config
-@Autonomous(name = "Forward Velocity Tuner", group = "Automatic Tuners")
-public class ForwardVelocityTuner extends OpMode {
-    private ArrayList<Double> velocities = new ArrayList<>();
+public abstract class ForwardVelocityTuner extends OpMode {
+    protected ArrayList<Double> velocities = new ArrayList<>();
 
-    private DcMotorEx leftFront;
-    private DcMotorEx leftRear;
-    private DcMotorEx rightFront;
-    private DcMotorEx rightRear;
-    private List<DcMotorEx> motors;
+    protected DcMotorEx leftFront;
+    protected DcMotorEx leftRear;
+    protected DcMotorEx rightFront;
+    protected DcMotorEx rightRear;
+    protected List<DcMotorEx> motors;
 
-    private PoseUpdater poseUpdater;
+    protected PoseUpdater poseUpdater;
 
     public static double DISTANCE = 48;
     public static double RECORD_NUMBER = 10;
 
-    private Telemetry telemetryA;
+    protected Telemetry telemetryA;
 
-    private boolean end;
+    protected boolean end;
+    
+    /**
+     * Set the constants for this OpMode
+     */
+    protected abstract void setConstants();
 
     /**
      * This initializes the drive motors as well as the cache of velocities and the FTC Dashboard
@@ -72,7 +73,7 @@ public class ForwardVelocityTuner extends OpMode {
      */
     @Override
     public void init() {
-        Constants.setConstants(FConstants.class, LConstants.class);
+        setConstants();
         poseUpdater = new PoseUpdater(hardwareMap);
 
         leftFront = hardwareMap.get(DcMotorEx.class, leftFrontMotorName);

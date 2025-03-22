@@ -1,10 +1,10 @@
 package pedroPathing.constants;
 
-import com.pedropathing.localization.*;
-import com.pedropathing.localization.constants.*;
+import com.pedropathing.localization.GoBildaPinpointDriver;
+import com.pedropathing.localization.constants.PinpointConstants;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
-public class LConstants {
+public class RicoLConstants {
     static {
         PinpointConstants.forwardY = -133.4;
         PinpointConstants.strafeX = 51.7;

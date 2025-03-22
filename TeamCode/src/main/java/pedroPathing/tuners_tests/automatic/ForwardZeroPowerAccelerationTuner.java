@@ -29,9 +29,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import pedroPathing.constants.FConstants;
-import pedroPathing.constants.LConstants;
-
 /**
  * This is the ForwardZeroPowerAccelerationTuner autonomous follower OpMode. This runs the robot
  * forward until a specified velocity is achieved. Then, the robot cuts power to the motors, setting
@@ -48,35 +45,36 @@ import pedroPathing.constants.LConstants;
  * @version 1.0, 3/13/2024
  */
 @Config
-@Autonomous(name = "Forward Zero Power Acceleration Tuner", group = "Automatic Tuners")
-public class ForwardZeroPowerAccelerationTuner extends OpMode {
-    private ArrayList<Double> accelerations = new ArrayList<>();
+public abstract class ForwardZeroPowerAccelerationTuner extends OpMode {
+    protected ArrayList<Double> accelerations = new ArrayList<>();
 
-    private DcMotorEx leftFront;
-    private DcMotorEx leftRear;
-    private DcMotorEx rightFront;
-    private DcMotorEx rightRear;
-    private List<DcMotorEx> motors;
+    protected DcMotorEx leftFront;
+    protected DcMotorEx leftRear;
+    protected DcMotorEx rightFront;
+    protected DcMotorEx rightRear;
+    protected List<DcMotorEx> motors;
 
-    private PoseUpdater poseUpdater;
+    protected PoseUpdater poseUpdater;
 
     public static double VELOCITY = 30;
 
-    private double previousVelocity;
+    protected double previousVelocity;
 
-    private long previousTimeNano;
+    protected long previousTimeNano;
 
-    private Telemetry telemetryA;
+    protected Telemetry telemetryA;
 
-    private boolean stopping;
-    private boolean end;
+    protected boolean stopping;
+    protected boolean end;
+    
+    protected abstract void setConstants();
 
     /**
      * This initializes the drive motors as well as the FTC Dashboard telemetry.
      */
     @Override
     public void init() {
-        Constants.setConstants(FConstants.class, LConstants.class);
+        setConstants();
         poseUpdater = new PoseUpdater(hardwareMap);
 
         leftFront = hardwareMap.get(DcMotorEx.class, leftFrontMotorName);

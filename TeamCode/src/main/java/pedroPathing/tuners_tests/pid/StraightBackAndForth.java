@@ -4,8 +4,8 @@ import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.pedropathing.util.Constants;
-import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import com.pedropathing.follower.Follower;
@@ -13,11 +13,8 @@ import com.pedropathing.pathgen.BezierLine;
 import com.pedropathing.pathgen.Path;
 import com.pedropathing.pathgen.Point;
 
-import pedroPathing.constants.FConstants;
-import pedroPathing.constants.LConstants;
-
 /**
- * This is the StraightBackAndForth autonomous OpMode. It runs the robot in a specified distance
+ * This is the abstract StraightBackAndForth autonomous OpMode. It runs the robot in a specified distance
  * straight forward. On reaching the end of the forward Path, the robot runs the backward Path the
  * same distance back to the start. Rinse and repeat! This is good for testing a variety of Vectors,
  * like the drive Vector, the translational Vector, and the heading Vector. Remember to test your
@@ -27,21 +24,25 @@ import pedroPathing.constants.LConstants;
  * @author Anyi Lin - 10158 Scott's Bots
  * @author Aaron Yang - 10158 Scott's Bots
  * @author Harrison Womack - 10158 Scott's Bots
- * @version 1.0, 3/12/2024
+ * @version 2.0, 3/22/2025
  */
 @Config
-@Autonomous (name = "Straight Back And Forth", group = "PIDF Tuning")
-public class StraightBackAndForth extends OpMode {
-    private Telemetry telemetryA;
+public abstract class StraightBackAndForth extends OpMode {
+    protected Telemetry telemetryA;
 
     public static double DISTANCE = 40;
 
-    private boolean forward = true;
+    protected boolean forward = true;
 
-    private Follower follower;
+    protected Follower follower;
 
-    private Path forwards;
-    private Path backwards;
+    protected Path forwards;
+    protected Path backwards;
+    
+    /**
+     * Set the constants for this OpMode
+     */
+    protected abstract void setConstants();
 
     /**
      * This initializes the Follower and creates the forward and backward Paths. Additionally, this
@@ -49,7 +50,7 @@ public class StraightBackAndForth extends OpMode {
      */
     @Override
     public void init() {
-        Constants.setConstants(FConstants.class, LConstants.class);
+        setConstants();
         follower = new Follower(hardwareMap);
 
         forwards = new Path(new BezierLine(new Point(0,0, Point.CARTESIAN), new Point(DISTANCE,0, Point.CARTESIAN)));

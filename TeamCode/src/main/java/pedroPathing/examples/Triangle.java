@@ -8,34 +8,34 @@ import com.pedropathing.pathgen.BezierLine;
 import com.pedropathing.pathgen.PathChain;
 import com.pedropathing.pathgen.Point;
 import com.pedropathing.util.Constants;
-import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
-import pedroPathing.constants.FConstants;
-import pedroPathing.constants.LConstants;
-
-
 /**
- * This is the Triangle autonomous OpMode.
+ * This is the abstract Triangle autonomous OpMode.
  * It runs the robot in a triangle, with the starting point being the bottom-middle point.
  *
  * @author Baron Henderson - 20077 The Indubitables
  * @author Samarth Mahapatra - 1002 CircuitRunners Robotics Surge
- * @version 1.0, 12/30/2024
+ * @version 2.0, 3/22/2025
  */
-@Autonomous(name = "Triangle", group = "Examples")
-public class Triangle extends OpMode {
-    private Follower follower;
+public abstract class Triangle extends OpMode {
+    protected Follower follower;
 
-    private final Pose startPose = new Pose(0,0, Math.toRadians(0));
-    private final Pose interPose = new Pose(24, -24, Math.toRadians(90));
-    private final Pose endPose = new Pose(24, 24, Math.toRadians(45));
+    protected final Pose startPose = new Pose(0,0, Math.toRadians(0));
+    protected final Pose interPose = new Pose(24, -24, Math.toRadians(90));
+    protected final Pose endPose = new Pose(24, 24, Math.toRadians(45));
 
-    private PathChain triangle;
+    protected PathChain triangle;
 
-    private Telemetry telemetryA;
+    protected Telemetry telemetryA;
+    
+    /**
+     * Set the constants for this OpMode
+     */
+    protected abstract void setConstants();
 
     /**
      * This runs the OpMode, updating the Follower as well as printing out the debug statements to
@@ -58,7 +58,7 @@ public class Triangle extends OpMode {
      */
     @Override
     public void init() {
-        Constants.setConstants(FConstants.class, LConstants.class);
+        setConstants();
         follower = new Follower(hardwareMap);
         follower.setStartingPose(startPose);
 
@@ -79,5 +79,4 @@ public class Triangle extends OpMode {
                 + "space to the left, front, and right to run the OpMode.");
         telemetryA.update();
     }
-
 }

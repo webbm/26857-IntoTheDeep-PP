@@ -15,7 +15,6 @@ import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.pedropathing.localization.Pose;
 import com.pedropathing.util.Constants;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.configuration.typecontainers.MotorConfigurationType;
@@ -28,35 +27,37 @@ import com.pedropathing.util.Drawing;
 import java.util.Arrays;
 import java.util.List;
 
-import pedroPathing.constants.*;
-
 /**
- * This is the LocalizationTest OpMode. This is basically just a simple mecanum drive attached to a
+ * This is the abstract LocalizationTest OpMode. This is basically just a simple mecanum drive attached to a
  * PoseUpdater. The OpMode will print out the robot's pose to telemetry as well as draw the robot
  * on FTC Dashboard (192/168/43/1:8080/dash). You should use this to check the robot's localization.
  *
  * @author Anyi Lin - 10158 Scott's Bots
- * @version 1.0, 5/6/2024
+ * @version 2.0, 3/22/2025
  */
 @Config
-@TeleOp(group = "Teleop Test", name = "Localization Test")
-public class LocalizationTest extends OpMode {
-    private PoseUpdater poseUpdater;
-    private DashboardPoseTracker dashboardPoseTracker;
-    private Telemetry telemetryA;
+public abstract class LocalizationTest extends OpMode {
+    protected PoseUpdater poseUpdater;
+    protected DashboardPoseTracker dashboardPoseTracker;
+    protected Telemetry telemetryA;
 
-    private DcMotorEx leftFront;
-    private DcMotorEx leftRear;
-    private DcMotorEx rightFront;
-    private DcMotorEx rightRear;
-    private List<DcMotorEx> motors;
+    protected DcMotorEx leftFront;
+    protected DcMotorEx leftRear;
+    protected DcMotorEx rightFront;
+    protected DcMotorEx rightRear;
+    protected List<DcMotorEx> motors;
+    
+    /**
+     * Set the constants for this OpMode
+     */
+    protected abstract void setConstants();
 
     /**
      * This initializes the PoseUpdater, the mecanum drive motors, and the FTC Dashboard telemetry.
      */
     @Override
     public void init() {
-        Constants.setConstants(FConstants.class, LConstants.class);
+        setConstants();
         poseUpdater = new PoseUpdater(hardwareMap);
 
         dashboardPoseTracker = new DashboardPoseTracker(poseUpdater);

@@ -29,9 +29,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import pedroPathing.constants.FConstants;
-import pedroPathing.constants.LConstants;
-
 /**
  * This is the StrafeVelocityTuner autonomous follower OpMode. This runs the robot right at max
  * power until it reaches some specified distance. It records the most recent velocities, and on
@@ -48,24 +45,25 @@ import pedroPathing.constants.LConstants;
  * @version 1.0, 3/13/2024
  */
 @Config
-@Autonomous(name = "Strafe Velocity Tuner", group = "Automatic Tuners")
-public class StrafeVelocityTuner extends OpMode {
-    private ArrayList<Double> velocities = new ArrayList<>();
+public abstract class StrafeVelocityTuner extends OpMode {
+    protected ArrayList<Double> velocities = new ArrayList<>();
 
-    private DcMotorEx leftFront;
-    private DcMotorEx leftRear;
-    private DcMotorEx rightFront;
-    private DcMotorEx rightRear;
-    private List<DcMotorEx> motors;
+    protected DcMotorEx leftFront;
+    protected DcMotorEx leftRear;
+    protected DcMotorEx rightFront;
+    protected DcMotorEx rightRear;
+    protected List<DcMotorEx> motors;
 
-    private PoseUpdater poseUpdater;
+    protected PoseUpdater poseUpdater;
 
     public static double DISTANCE = 48;
     public static double RECORD_NUMBER = 10;
 
-    private Telemetry telemetryA;
+    protected Telemetry telemetryA;
 
-    private boolean end;
+    protected boolean end;
+    
+    protected abstract void setConstants();
 
     /**
      * This initializes the drive motors as well as the cache of velocities and the FTC Dashboard
@@ -73,7 +71,7 @@ public class StrafeVelocityTuner extends OpMode {
      */
     @Override
     public void init() {
-        Constants.setConstants(FConstants.class, LConstants.class);
+        setConstants();
         poseUpdater = new PoseUpdater(hardwareMap);
 
         leftFront = hardwareMap.get(DcMotorEx.class, leftFrontMotorName);

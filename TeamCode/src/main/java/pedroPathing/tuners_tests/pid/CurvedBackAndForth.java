@@ -4,8 +4,8 @@ import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.pedropathing.util.Constants;
-import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import com.pedropathing.follower.Follower;
@@ -13,11 +13,8 @@ import com.pedropathing.pathgen.BezierCurve;
 import com.pedropathing.pathgen.Path;
 import com.pedropathing.pathgen.Point;
 
-import pedroPathing.constants.FConstants;
-import pedroPathing.constants.LConstants;
-
 /**
- * This is the CurvedBackAndForth autonomous OpMode. It runs the robot in a specified distance
+ * This is the abstract CurvedBackAndForth autonomous OpMode. It runs the robot in a specified distance
  * forward and to the left. On reaching the end of the forward Path, the robot runs the backward
  * Path the same distance back to the start. Rinse and repeat! This is good for testing a variety
  * of Vectors, like the drive Vector, the translational Vector, the heading Vector, and the
@@ -27,21 +24,25 @@ import pedroPathing.constants.LConstants;
  * @author Anyi Lin - 10158 Scott's Bots
  * @author Aaron Yang - 10158 Scott's Bots
  * @author Harrison Womack - 10158 Scott's Bots
- * @version 1.0, 3/13/2024
+ * @version 2.0, 3/22/2025
  */
 @Config
-@Autonomous (name = "Curved Back And Forth", group = "PIDF Testing")
-public class CurvedBackAndForth extends OpMode {
-    private Telemetry telemetryA;
+public abstract class CurvedBackAndForth extends OpMode {
+    protected Telemetry telemetryA;
 
     public static double DISTANCE = 20;
 
-    private boolean forward = true;
+    protected boolean forward = true;
 
-    private Follower follower;
+    protected Follower follower;
 
-    private Path forwards;
-    private Path backwards;
+    protected Path forwards;
+    protected Path backwards;
+    
+    /**
+     * Set the constants for this OpMode
+     */
+    protected abstract void setConstants();
 
     /**
      * This initializes the Follower and creates the forward and backward Paths. Additionally, this
@@ -49,7 +50,7 @@ public class CurvedBackAndForth extends OpMode {
      */
     @Override
     public void init() {
-        Constants.setConstants(FConstants.class, LConstants.class);
+        setConstants();
         follower = new Follower(hardwareMap);
 
         forwards = new Path(new BezierCurve(new Point(0,0, Point.CARTESIAN), new Point(Math.abs(DISTANCE),0, Point.CARTESIAN), new Point(Math.abs(DISTANCE),DISTANCE, Point.CARTESIAN)));

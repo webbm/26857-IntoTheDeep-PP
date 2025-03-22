@@ -4,19 +4,16 @@ import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.pedropathing.util.Constants;
-import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import com.pedropathing.localization.PoseUpdater;
 import com.pedropathing.util.DashboardPoseTracker;
 import com.pedropathing.util.Drawing;
 
-import pedroPathing.constants.FConstants;
-import pedroPathing.constants.LConstants;
-
 /**
- * This is the ForwardTuner OpMode. This tracks the forward movement of the robot and displays the
+ * This is the abstract ForwardTuner OpMode. This tracks the forward movement of the robot and displays the
  * necessary ticks to inches multiplier. This displayed multiplier is what's necessary to scale the
  * robot's current distance in ticks to the specified distance in inches. So, to use this, run the
  * tuner, then pull/push the robot to the specified distance using a ruler on the ground. When you're
@@ -26,24 +23,28 @@ import pedroPathing.constants.LConstants;
  * You can adjust the target distance on FTC Dashboard: 192/168/43/1:8080/dash
  *
  * @author Anyi Lin - 10158 Scott's Bots
- * @version 1.0, 5/6/2024
+ * @version 2.0, 3/22/2025
  */
 @Config
-@Autonomous(name = "Forward Localizer Tuner", group = ".Localization")
-public class ForwardTuner extends OpMode {
-    private PoseUpdater poseUpdater;
-    private DashboardPoseTracker dashboardPoseTracker;
+public abstract class ForwardTuner extends OpMode {
+    protected PoseUpdater poseUpdater;
+    protected DashboardPoseTracker dashboardPoseTracker;
 
-    private Telemetry telemetryA;
+    protected Telemetry telemetryA;
 
     public static double DISTANCE = 48;
+    
+    /**
+     * Set the constants for this OpMode
+     */
+    protected abstract void setConstants();
 
     /**
      * This initializes the PoseUpdater as well as the FTC Dashboard telemetry.
      */
     @Override
     public void init() {
-        Constants.setConstants(FConstants.class, LConstants.class);
+        setConstants();
         poseUpdater = new PoseUpdater(hardwareMap);
 
         dashboardPoseTracker = new DashboardPoseTracker(poseUpdater);

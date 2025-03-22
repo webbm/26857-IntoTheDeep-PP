@@ -13,7 +13,6 @@ import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.pedropathing.util.Constants;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.configuration.typecontainers.MotorConfigurationType;
@@ -23,22 +22,29 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 import java.util.Arrays;
 import java.util.List;
 
-import pedroPathing.constants.FConstants;
-import pedroPathing.constants.LConstants;
+/**
+ * Abstract class for testing motor directions. Press buttons to activate individual motors.
+ * A: left front, Y: left rear, B: right front, X: right rear.
+ * 
+ * @version 2.0, 3/22/2025
+ */
+public abstract class MotorDirections extends OpMode {
+    protected Telemetry telemetryA;
 
-@TeleOp(name = "Motor Directions", group = "Teleop Test")
-public class MotorDirections extends OpMode {
-    private Telemetry telemetryA;
-
-    private DcMotorEx leftFront;
-    private DcMotorEx leftRear;
-    private DcMotorEx rightFront;
-    private DcMotorEx rightRear;
-    private List<DcMotorEx> motors;
+    protected DcMotorEx leftFront;
+    protected DcMotorEx leftRear;
+    protected DcMotorEx rightFront;
+    protected DcMotorEx rightRear;
+    protected List<DcMotorEx> motors;
+    
+    /**
+     * Set the constants for this OpMode
+     */
+    protected abstract void setConstants();
 
     @Override
     public void init() {
-        Constants.setConstants(FConstants.class, LConstants.class);
+        setConstants();
 
         leftFront = hardwareMap.get(DcMotorEx.class, leftFrontMotorName);
         leftRear = hardwareMap.get(DcMotorEx.class, leftRearMotorName);
@@ -68,7 +74,7 @@ public class MotorDirections extends OpMode {
 
     @Override
     public void loop() {
-        Constants.setConstants(FConstants.class, LConstants.class);
+        setConstants();
         leftFront.setDirection(leftFrontMotorDirection);
         leftRear.setDirection(leftRearMotorDirection);
         rightFront.setDirection(rightFrontMotorDirection);

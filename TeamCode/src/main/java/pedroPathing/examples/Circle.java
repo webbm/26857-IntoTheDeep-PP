@@ -4,19 +4,16 @@ import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.pedropathing.util.Constants;
-import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import com.pedropathing.follower.Follower;
 import com.pedropathing.pathgen.BezierCurve;
 import com.pedropathing.pathgen.PathChain;
 import com.pedropathing.pathgen.Point;
 
-import pedroPathing.constants.FConstants;
-import pedroPathing.constants.LConstants;
-
 /**
- * This is the Circle autonomous OpMode. It runs the robot in a PathChain that's actually not quite
+ * This is the abstract Circle autonomous OpMode. It runs the robot in a PathChain that's actually not quite
  * a circle, but some Bezier curves that have control points set essentially in a square. However,
  * it turns enough to tune your centripetal force correction and some of your heading. Some lag in
  * heading is to be expected.
@@ -24,18 +21,22 @@ import pedroPathing.constants.LConstants;
  * @author Anyi Lin - 10158 Scott's Bots
  * @author Aaron Yang - 10158 Scott's Bots
  * @author Harrison Womack - 10158 Scott's Bots
- * @version 1.0, 3/12/2024
+ * @version 2.0, 3/22/2025
  */
 @Config
-@Autonomous (name = "Circle", group = "Examples")
-public class Circle extends OpMode {
-    private Telemetry telemetryA;
+public abstract class Circle extends OpMode {
+    protected Telemetry telemetryA;
 
     public static double RADIUS = 10;
 
-    private Follower follower;
+    protected Follower follower;
 
-    private PathChain circle;
+    protected PathChain circle;
+    
+    /**
+     * Set the constants for this OpMode
+     */
+    protected abstract void setConstants();
 
     /**
      * This initializes the Follower and creates the PathChain for the "circle". Additionally, this
@@ -43,7 +44,7 @@ public class Circle extends OpMode {
      */
     @Override
     public void init() {
-        Constants.setConstants(FConstants.class, LConstants.class);
+        setConstants();
         follower = new Follower(hardwareMap);
 
         circle = follower.pathBuilder()
