@@ -20,11 +20,11 @@ public class RicoFConstants {
 
         FollowerConstants.mass = 12.5;
 
-        FollowerConstants.xMovement = 78.0111;
-        FollowerConstants.yMovement = 54.9928;
+        FollowerConstants.xMovement = 76.58067719978624;
+        FollowerConstants.yMovement = 55.9580057176608;
 
-        FollowerConstants.forwardZeroPowerAcceleration = -41.113;
-        FollowerConstants.lateralZeroPowerAcceleration = -85.2023;
+        FollowerConstants.forwardZeroPowerAcceleration = -52.052244718008346;
+        FollowerConstants.lateralZeroPowerAcceleration = -85.080858951978;
 
         FollowerConstants.translationalPIDFCoefficients.setCoefficients(0.85,0,0.08,0);
         FollowerConstants.useSecondaryTranslationalPID = false;
@@ -34,12 +34,12 @@ public class RicoFConstants {
         FollowerConstants.useSecondaryHeadingPID = false;
         FollowerConstants.secondaryHeadingPIDFCoefficients.setCoefficients(2,0,0.1,0); // Not being used, @see useSecondaryHeadingPID
 
-        FollowerConstants.drivePIDFCoefficients.setCoefficients(0.02,0,0.0025,0.6,0);
+        FollowerConstants.drivePIDFCoefficients.setCoefficients(0.011,0,0.00007,0.6,0);
         FollowerConstants.useSecondaryDrivePID = false;
         FollowerConstants.secondaryDrivePIDFCoefficients.setCoefficients(0.1,0,0,0.6,0); // Not being used, @see useSecondaryDrivePID
 
         FollowerConstants.zeroPowerAccelerationMultiplier = 3;
-        FollowerConstants.centripetalScaling = 0.005;
+        FollowerConstants.centripetalScaling = 0.015;
 
         FollowerConstants.pathEndTimeoutConstraint = 100;
         FollowerConstants.pathEndTValueConstraint = 0.995;

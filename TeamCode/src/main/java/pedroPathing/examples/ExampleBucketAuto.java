@@ -40,29 +40,39 @@ public abstract class ExampleBucketAuto extends OpMode {
      * Lets assume the Robot is facing the human player and we want to score in the bucket */
 
     /** Start Pose of our robot */
-    protected final Pose startPose = new Pose(6.75, 111, Math.toRadians(270));
+    protected final Pose startPose = new Pose(6.5, 106.75, Math.toRadians(270));
 
     /** Scoring Pose of our robot. It is facing the submersible at a -45 degree (315 degree) angle. */
     protected final Pose scorePose = new Pose(14, 129, Math.toRadians(315));
 
     /** Lowest (First) Sample from the Spike Mark */
-    protected final Pose pickup1Pose = new Pose(37, 121, Math.toRadians(0));
+    protected final Pose pickup1Pose = new Pose(24, 123, Math.toRadians(0));
 
     /** Middle (Second) Sample from the Spike Mark */
-    protected final Pose pickup2Pose = new Pose(43, 130, Math.toRadians(0));
+    protected final Pose pickup2Pose = new Pose(24, 133, Math.toRadians(0));
 
     /** Highest (Third) Sample from the Spike Mark */
-    protected final Pose pickup3Pose = new Pose(49, 135, Math.toRadians(0));
+    protected final Pose pickup3Pose = new Pose(24, 130, Math.toRadians(45));
+
+    protected final Pose cyclePose = new Pose(60, 97, Math.toRadians(-90));
+
+    /** Park Control Pose for our robot, this is used to manipulate the bezier curve that we will create for the parking.
+     * The Robot will not go to this pose, it is used a control point for our bezier curve. */
+    protected final Pose cycleControlPose = new Pose(65, 120, Math.toRadians(-90));
+
+    protected final Pose scoreCycle = new Pose(15, 129, Math.toRadians(45));
+
+    protected final Pose cycleScoreControlPose = new Pose(65, 120, Math.toRadians(-90));
 
     /** Park Pose for our robot, after we do all of the scoring. */
     protected final Pose parkPose = new Pose(60, 98, Math.toRadians(90));
 
     /** Park Control Pose for our robot, this is used to manipulate the bezier curve that we will create for the parking.
      * The Robot will not go to this pose, it is used a control point for our bezier curve. */
-    protected final Pose parkControlPose = new Pose(60, 98, Math.toRadians(90));
+    protected final Pose parkControlPose = new Pose(60, 100, Math.toRadians(90));
 
     /* These are our Paths and PathChains that we will define in buildPaths() */
-    protected Path scorePreload, park;
+    protected Path scorePreload, park, cycle, cycleScore1;
     protected PathChain grabPickup1, grabPickup2, grabPickup3, scorePickup1, scorePickup2, scorePickup3;
     
     /**
@@ -131,6 +141,12 @@ public abstract class ExampleBucketAuto extends OpMode {
                 .addPath(new BezierLine(new Point(pickup3Pose), new Point(scorePose)))
                 .setLinearHeadingInterpolation(pickup3Pose.getHeading(), scorePose.getHeading())
                 .build();
+
+        cycle = new Path(new BezierCurve(new Point(scorePose), /* Control Point */ new Point(cycleControlPose), new Point(cyclePose)));
+        cycle.setLinearHeadingInterpolation(scorePose.getHeading(), cyclePose.getHeading());
+
+        cycleScore1 = new Path(new BezierCurve(new Point(cyclePose), /* Control Point */ new Point(cycleScoreControlPose), new Point(scoreCycle)));
+        cycleScore1.setLinearHeadingInterpolation(cyclePose.getHeading(), scoreCycle.getHeading());
 
         /* This is our park path. We are using a BezierCurve with 3 points, which is a curved line that is curved based off of the control point */
         park = new Path(new BezierCurve(new Point(scorePose), /* Control Point */ new Point(parkControlPose), new Point(parkPose)));
@@ -214,16 +230,36 @@ public abstract class ExampleBucketAuto extends OpMode {
                 }
                 break;
             case 7:
+                /* This case checks the robot's position and will wait until the robot position is close (1 inch away) from the pickup3Pose's position */
+                if(!follower.isBusy()) {
+                    /* Grab Sample */
+
+                    /* Since this is a pathChain, we can have Pedro hold the end point while we are scoring the sample */
+                    follower.followPath(cycle, true);
+                    setPathState(8);
+                }
+                break;
+            case 8:
+                /* This case checks the robot's position and will wait until the robot position is close (1 inch away) from the scorePose's position */
+                if(!follower.isBusy()) {
+                    /* Score Sample */
+
+                    /* Since this is a pathChain, we can have Pedro hold the end point while we are grabbing the sample */
+                    follower.followPath(cycleScore1,true);
+                    setPathState(9);
+                }
+                break;
+            case 9:
                 /* This case checks the robot's position and will wait until the robot position is close (1 inch away) from the scorePose's position */
                 if(!follower.isBusy()) {
                     /* Score Sample */
 
                     /* Since this is a pathChain, we can have Pedro hold the end point while we are parked */
                     follower.followPath(park,true);
-                    setPathState(8);
+                    setPathState(10);
                 }
                 break;
-            case 8:
+            case 10:
                 /* This case checks the robot's position and will wait until the robot position is close (1 inch away) from the scorePose's position */
                 if(!follower.isBusy()) {
                     /* Level 1 Ascent */
