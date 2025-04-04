@@ -11,7 +11,7 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 
 @Config
 @TeleOp
-public class SlidePID extends OpMode {
+public class SlidePidTuner extends OpMode {
 
     private PIDController slideController;
 

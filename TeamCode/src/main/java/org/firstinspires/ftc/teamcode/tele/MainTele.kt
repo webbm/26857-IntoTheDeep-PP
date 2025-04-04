@@ -13,8 +13,6 @@ import com.qualcomm.robotcore.hardware.DcMotorEx
 import com.qualcomm.robotcore.hardware.DcMotorSimple
 import org.firstinspires.ftc.teamcode.robot.Pivot
 import org.firstinspires.ftc.teamcode.robot.VerticalSlide
-import org.firstinspires.ftc.teamcode.samples.PivotPID
-import org.firstinspires.ftc.teamcode.samples.SlidePID
 import org.firstinspires.ftc.teamcode.util.PS5Keys
 import kotlin.math.cos
 import kotlin.math.max
