@@ -39,16 +39,7 @@ class SlidePID(hardwareMap: HardwareMap) {
         @JvmField var MAX_EXTENSION = 700.0
         @JvmField var MIN_EXTENSION = 0.0
     }
-    
-    init {
-        // Initialize motors
-        slideRight.zeroPowerBehavior = DcMotor.ZeroPowerBehavior.BRAKE
-        slideLeft.zeroPowerBehavior = DcMotor.ZeroPowerBehavior.BRAKE
-        
-        // Reset encoders
-        resetEncoder()
-    }
-    
+
     fun setTarget(targetPosition: Double) {
         // Constrain target to valid range
         target = when {
@@ -107,14 +98,7 @@ class SlidePID(hardwareMap: HardwareMap) {
     fun getCurrentPosition(): Int {
         return slideLeft.currentPosition
     }
-    
-    fun resetEncoder() {
-        slideLeft.mode = DcMotor.RunMode.STOP_AND_RESET_ENCODER
-        slideLeft.mode = DcMotor.RunMode.RUN_USING_ENCODER
-        slideRight.mode = DcMotor.RunMode.STOP_AND_RESET_ENCODER
-        slideRight.mode = DcMotor.RunMode.RUN_USING_ENCODER
-    }
-    
+
     fun isBusy(): Boolean {
         val currentPosition = slideLeft.currentPosition.toDouble()
         // Consider the slide "at target" when within 20 ticks

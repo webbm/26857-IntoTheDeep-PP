@@ -12,7 +12,7 @@ import kotlin.math.cos
 class PivotPID(hardwareMap: HardwareMap) {
     enum class Position(val value: Double) {
         SCORING_POSITION(-1000.0),
-        FLOOR_POSITION(-50.0);
+        FLOOR_POSITION(0.0);
     }
 
     private val controller = PIDController(p, i, d)
@@ -32,16 +32,7 @@ class PivotPID(hardwareMap: HardwareMap) {
         @JvmField var d = 0.0
         @JvmField var f = 0.0
     }
-    
-    init {
-        // Initialize motors
-        pivotRight.zeroPowerBehavior = DcMotor.ZeroPowerBehavior.BRAKE
-        pivotLeft.zeroPowerBehavior = DcMotor.ZeroPowerBehavior.BRAKE
-        
-        // Reset encoders
-        resetEncoder()
-    }
-    
+
     fun setTarget(targetPosition: Double) {
         target = targetPosition
     }
@@ -74,14 +65,7 @@ class PivotPID(hardwareMap: HardwareMap) {
     fun getCurrentPosition(): Int {
         return pivotLeft.currentPosition
     }
-    
-    fun resetEncoder() {
-        pivotLeft.mode = DcMotor.RunMode.STOP_AND_RESET_ENCODER
-        pivotLeft.mode = DcMotor.RunMode.RUN_USING_ENCODER
-        pivotRight.mode = DcMotor.RunMode.STOP_AND_RESET_ENCODER
-        pivotRight.mode = DcMotor.RunMode.RUN_USING_ENCODER
-    }
-    
+
     fun isBusy(): Boolean {
         val currentPosition = pivotLeft.currentPosition.toDouble()
         // Consider the pivot "at target" when within 20 ticks
