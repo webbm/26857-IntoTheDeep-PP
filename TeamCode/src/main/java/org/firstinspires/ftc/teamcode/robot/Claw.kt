@@ -1,34 +1,52 @@
 package org.firstinspires.ftc.teamcode.robot
 
+import com.acmerobotics.dashboard.config.Config
 import com.qualcomm.robotcore.hardware.HardwareMap
 import com.qualcomm.robotcore.hardware.Servo
 
+/**
+ * Controls the claw servo for grasping samples
+ */
+@Config
 class Claw(hardwareMap: HardwareMap) {
-    private val claw = hardwareMap.servo.get("claw").apply {
-        direction = Servo.Direction.FORWARD
+    private val servo: Servo = hardwareMap.get(Servo::class.java, "claw")
+
+    enum class Position(val value: Double) {
+        OPEN(0.0),
+        CLOSED(0.9),
+        TRAVEL(0.9);
     }
-    private var position: Position = Position.CLOSED
 
     init {
-        setPosition(position)
+        setPosition(Position.TRAVEL.value)
     }
 
-    enum class Position(val position: Double) {
-        OPEN(0.15),
-        CLOSED(0.0),
-        SUPER_OPEN(0.2)
+    companion object {
+        // These match the values from CLAUDE.md
+        @JvmField var OPEN = 0.0
+        @JvmField var CLOSED = 0.9
+        @JvmField var TRAVEL = 0.9
     }
-
+    
+    /**
+     * Sets the claw to a preset position
+     */
     fun setPosition(position: Position) {
-        this.position = position
-        claw.position = position.position
+        servo.position = position.value
     }
-
-    fun getRawPosition(): Double {
-        return claw.position
+    
+    /**
+     * Sets the claw to a specific position value
+     * @param position Value between 0.0 (open) and 0.9 (closed)
+     */
+    fun setPosition(position: Double) {
+        servo.position = position
     }
-
-    fun setRawPosition(position: Double) {
-        claw.position = position
+    
+    /**
+     * Gets the current position of the claw
+     */
+    fun getPosition(): Double {
+        return servo.position
     }
 }

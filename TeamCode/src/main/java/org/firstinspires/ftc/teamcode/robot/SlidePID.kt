@@ -10,20 +10,28 @@ import kotlin.math.cos
 
 @Config
 class SlidePID(hardwareMap: HardwareMap) {
-    enum class Position(val value: Double) {
-        RETRACTED(0.0),
-        LOW_BASKET(350.0),
-        HIGH_BASKET(700.0);
-    }
-
-    private val controller = PIDController(p, i, d)
-    private val ticksInDegree = 12.19
-    
     private val slideRight: DcMotorEx = hardwareMap.get(DcMotorEx::class.java, "right_slide")
     private val slideLeft: DcMotorEx = hardwareMap.get(DcMotorEx::class.java, "left_slide").apply {
         direction = DcMotorSimple.Direction.REVERSE
     }
-    
+
+    enum class Position(val value: Double) {
+        RETRACTED(0.0),
+        LOW_BASKET(500.0),
+        HIGH_BASKET(1000.0);
+    }
+
+    init {
+        slideRight.mode = DcMotor.RunMode.STOP_AND_RESET_ENCODER
+        slideRight.mode = DcMotor.RunMode.RUN_WITHOUT_ENCODER
+        slideLeft.mode = DcMotor.RunMode.STOP_AND_RESET_ENCODER
+        slideLeft.mode = DcMotor.RunMode.RUN_WITHOUT_ENCODER
+        setTarget(Position.RETRACTED.value)
+    }
+
+    private val controller = PIDController(p, i, d)
+    private val ticksInDegree = 12.19
+
     var target = 0.0
         private set
     
@@ -65,7 +73,7 @@ class SlidePID(hardwareMap: HardwareMap) {
             currentPosition <= MIN_EXTENSION && power < 0 -> 0.0
             else -> power
         }
-        
+
         slideLeft.power = safePower
         slideRight.power = safePower
         isManualControl = true

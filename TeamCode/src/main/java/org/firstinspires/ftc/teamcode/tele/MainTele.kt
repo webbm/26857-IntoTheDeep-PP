@@ -11,8 +11,6 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp
 import com.qualcomm.robotcore.hardware.DcMotor
 import com.qualcomm.robotcore.hardware.DcMotorEx
 import com.qualcomm.robotcore.hardware.DcMotorSimple
-import org.firstinspires.ftc.teamcode.robot.Pivot
-import org.firstinspires.ftc.teamcode.robot.VerticalSlide
 import org.firstinspires.ftc.teamcode.util.PS5Keys
 import kotlin.math.cos
 import kotlin.math.max
@@ -51,8 +49,6 @@ class MainTele : LinearOpMode() {
         // Initialize your robot hardware and other components here
         val dc = GamepadEx(gamepad1)
         val mc = GamepadEx(gamepad2)
-        val verticalSlide = VerticalSlide(hardwareMap)
-        val pivot = Pivot(hardwareMap)
         var manualOverride = false
 
         controller = PIDController(p, i, d)

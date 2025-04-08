@@ -10,19 +10,27 @@ import kotlin.math.cos
 
 @Config
 class PivotPID(hardwareMap: HardwareMap) {
+    private val pivotRight: DcMotorEx = hardwareMap.get(DcMotorEx::class.java, "right_pivot")
+    private val pivotLeft: DcMotorEx = hardwareMap.get(DcMotorEx::class.java, "left_pivot").apply {
+        direction = DcMotorSimple.Direction.REVERSE
+    }
+
     enum class Position(val value: Double) {
         SCORING_POSITION(-1000.0),
         FLOOR_POSITION(0.0);
     }
 
+    init {
+        pivotRight.mode = DcMotor.RunMode.STOP_AND_RESET_ENCODER
+        pivotRight.mode = DcMotor.RunMode.RUN_WITHOUT_ENCODER
+        pivotLeft.mode = DcMotor.RunMode.STOP_AND_RESET_ENCODER
+        pivotLeft.mode = DcMotor.RunMode.RUN_WITHOUT_ENCODER
+        setTarget(Position.FLOOR_POSITION)
+    }
+
     private val controller = PIDController(p, i, d)
     private val ticksInDegree = 12.19
-    
-    private val pivotRight: DcMotorEx = hardwareMap.get(DcMotorEx::class.java, "right_pivot")
-    private val pivotLeft: DcMotorEx = hardwareMap.get(DcMotorEx::class.java, "left_pivot").apply {
-        direction = DcMotorSimple.Direction.REVERSE
-    }
-    
+
     var target = 0.0
         private set
     

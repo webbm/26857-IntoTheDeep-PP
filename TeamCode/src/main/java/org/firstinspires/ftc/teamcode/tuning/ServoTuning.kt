@@ -8,9 +8,8 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp
 import com.qualcomm.robotcore.hardware.CRServo
 import com.qualcomm.robotcore.hardware.CRServoImplEx
 import com.qualcomm.robotcore.hardware.Servo
-import org.firstinspires.ftc.teamcode.robot.Claw
 
-    @Config
+//    @Config
     object ServoHangRelease {
         @JvmField
         var positionDown: Double = -1.0
@@ -22,7 +21,7 @@ import org.firstinspires.ftc.teamcode.robot.Claw
         var positionUp: Double = 1.0
     }
 
-   @Config
+//   @Config
     object ServoPull {
 
         @JvmField
@@ -38,7 +37,7 @@ import org.firstinspires.ftc.teamcode.robot.Claw
         var idle: Double = 0.0
     }
 
-    @Config
+//    @Config
     object ServoClaw {
         @JvmField
         var superOpen: Double = 0.0
@@ -50,7 +49,7 @@ import org.firstinspires.ftc.teamcode.robot.Claw
         var closed: Double = 1.0
     }
 
-    @Config
+//    @Config
     object ServoWrist {
         @JvmField
         var intake: Double = 0.0
@@ -63,7 +62,7 @@ import org.firstinspires.ftc.teamcode.robot.Claw
     }
 
 
-    @Config
+//    @Config
     object ServoRotateWrist {
         @JvmField
         var vertical: Double = 0.0
@@ -79,7 +78,7 @@ import org.firstinspires.ftc.teamcode.robot.Claw
 
     }
 
-    @Config
+//    @Config
     object ServoElbow {
         @JvmField
         var outake: Double = 1.0
@@ -95,7 +94,7 @@ import org.firstinspires.ftc.teamcode.robot.Claw
     }
 
 
-@TeleOp
+//@TeleOp
 class ServoTuning : LinearOpMode() {
 
     private lateinit var hangRelease: CRServoImplEx
