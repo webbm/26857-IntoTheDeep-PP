@@ -13,7 +13,7 @@ class Wrist(hardwareMap: HardwareMap) {
 
     enum class Position(val value: Double) {
         PRONATED(0.0),
-        MID(0.5),
+        MID(0.4),
         SUPINATED(1.0),
         TRAVEL(0.75);
     }

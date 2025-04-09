@@ -1,15 +1,16 @@
-package org.firstinspires.ftc.teamcode.robot
+package org.firstinspires.ftc.teamcode.movement
 
 import com.acmerobotics.dashboard.config.Config
 import com.qualcomm.robotcore.hardware.HardwareMap
 import org.firstinspires.ftc.robotcore.external.Telemetry
+import org.firstinspires.ftc.teamcode.robot.*
 
 /**
  * Handles complex movements that coordinate multiple manipulators
  * Uses a state machine approach with proper timing to ensure servos reach positions
  */
 @Config
-class TravelMovement(
+class PickupMovement(
     hardwareMap: HardwareMap,
     private val telemetry: Telemetry? = null
 ) {
@@ -27,28 +28,24 @@ class TravelMovement(
     
     enum class MovementState {
         IDLE,
-        TRAVEL_STEP1,
-        TRAVEL_STEP2,
-        TRAVEL_STEP3,
-        TRAVEL_COMPLETE
-    }
-    
-    companion object {
-        // Timing constants for state machine (milliseconds)
-        @JvmField var SERVO_MOVE_TIME = 250L
+        STEP1,
+        STEP2,
+        STEP3,
+        STEP4,
+        COMPLETE
     }
     
     /**
      * Initiates the travel position movement sequence
      * Follows coordinated sequence with timing to ensure safe movement
      */
-    fun setTravelPosition() {
-        currentState = MovementState.TRAVEL_STEP1
+    fun setPickupPosition() {
+        currentState = MovementState.STEP1
         stateStartTime = System.currentTimeMillis()
         
         // Step 1: First start the motors moving (they're slow) and set wrist and claw
-        slidePID.setTarget(SlidePID.Position.RETRACTED)
-        pivotPID.setTarget(PivotPID.Position.FLOOR_POSITION)
+//        slidePID.setTarget(SlidePID.Position.RETRACTED)
+//        pivotPID.setTarget(PivotPID.Position.FLOOR_POSITION)
         wrist.setPosition(Wrist.Position.TRAVEL)
         claw.setPosition(Claw.Position.TRAVEL)
         
@@ -62,53 +59,84 @@ class TravelMovement(
      */
     fun update() {
         // Always update the PID controllers
-        slidePID.update()
-        pivotPID.update()
+//        slidePID.update()
+//        pivotPID.update()
+
+        if (slidePID.getCurrentPosition() <= 251){
+            currentState = MovementState.IDLE
+            return
+        }
         
         val currentTime = System.currentTimeMillis()
         val elapsedTime = currentTime - stateStartTime
         
         when (currentState) {
-            MovementState.TRAVEL_STEP1 -> {
+            MovementState.STEP1 -> {
                 // Wait for wrist and claw to reach position
-                if (elapsedTime >= SERVO_MOVE_TIME) {
+                if (elapsedTime >= 150) {
+
                     // Step 2: Set elbow position
-                    elbow.setPosition(Elbow.Position.TRAVEL)
+                    claw.setPosition(Claw.Position.OPEN)
+                    wrist.setPosition(Wrist.Position.PRONATED)
                     
                     // Transition to next state
-                    currentState = MovementState.TRAVEL_STEP2
+                    currentState = MovementState.STEP2
                     stateStartTime = currentTime
                     telemetry?.addData("Movement", "Travel Step 2: Setting elbow")
                     telemetry?.update()
                 }
             }
             
-            MovementState.TRAVEL_STEP2 -> {
+            MovementState.STEP2 -> {
                 // Wait for elbow to reach position
-                if (elapsedTime >= SERVO_MOVE_TIME) {
+                if (elapsedTime >= 100) {
                     // Step 3: Set rotate position
-                    rotate.setPosition(Rotate.Position.TRAVEL)
-                    
+                    elbow.setPosition(Elbow.Position.PARALLEL)
                     // Transition to next state
-                    currentState = MovementState.TRAVEL_STEP3
+                    currentState = MovementState.STEP3
                     stateStartTime = currentTime
                     telemetry?.addData("Movement", "Travel Step 3: Setting rotate")
                     telemetry?.update()
                 }
             }
             
-            MovementState.TRAVEL_STEP3 -> {
+            MovementState.STEP3 -> {
                 // Wait for rotate to reach position and check if motors finished
-                if (elapsedTime >= SERVO_MOVE_TIME && !slidePID.isBusy() && !pivotPID.isBusy()) {
+                if (elapsedTime >= 100) {
+
+                    rotate.setPosition(Rotate.Position.SQUARE)
+
                     // Movement complete
-                    currentState = MovementState.TRAVEL_COMPLETE
+                    currentState = MovementState.STEP4
+                    telemetry?.addData("Movement", "Travel position complete")
+                    telemetry?.update()
+                }
+            }
+            MovementState.STEP4 -> {
+                // Wait for rotate to reach position and check if motors finished
+                if (elapsedTime >= 250) {
+
+                    claw.setPosition(Claw.Position.CLOSED)
+
+                    // Movement complete
+                    currentState = MovementState.COMPLETE
                     telemetry?.addData("Movement", "Travel position complete")
                     telemetry?.update()
                 }
             }
             
-            MovementState.TRAVEL_COMPLETE -> {
-                // Stay in complete state until new movement requested
+            MovementState.COMPLETE -> {
+                if (elapsedTime >= 400) {
+
+                    elbow.setPosition(Elbow.Position.TRAVEL)
+                    wrist.setPosition(Wrist.Position.TRAVEL)
+
+                    // Movement complete
+                    currentState = MovementState.IDLE
+                    telemetry?.addData("Movement", "Travel position complete")
+                    telemetry?.update()
+                    // Stay in complete state until new movement requested
+                }
             }
             
             MovementState.IDLE -> {
@@ -128,15 +156,15 @@ class TravelMovement(
      * Returns true if the travel position movement is complete
      */
     fun isTravelPositionComplete(): Boolean {
-        return currentState == MovementState.TRAVEL_COMPLETE
+        return currentState == MovementState.COMPLETE
     }
     
     /**
      * Returns if any complex movement is currently in progress
      */
     fun isMovementInProgress(): Boolean {
-        return currentState != MovementState.IDLE && 
-               currentState != MovementState.TRAVEL_COMPLETE
+        return currentState != MovementState.IDLE &&
+               currentState != MovementState.COMPLETE
     }
     
     /**
@@ -154,13 +182,13 @@ class TravelMovement(
         telemetry.addData("Movement Time", System.currentTimeMillis() - stateStartTime)
         
         // Add data for each manipulator
-        telemetry.addData("Slide Position", slidePID.getCurrentPosition())
-        telemetry.addData("Slide Target", slidePID.target)
-        telemetry.addData("Slide Busy", slidePID.isBusy())
+//        telemetry.addData("Slide Position", slidePID.getCurrentPosition())
+//        telemetry.addData("Slide Target", slidePID.target)
+//        telemetry.addData("Slide Busy", slidePID.isBusy())
         
-        telemetry.addData("Pivot Position", pivotPID.getCurrentPosition())
-        telemetry.addData("Pivot Target", pivotPID.target)
-        telemetry.addData("Pivot Busy", pivotPID.isBusy())
+//        telemetry.addData("Pivot Position", pivotPID.getCurrentPosition())
+//        telemetry.addData("Pivot Target", pivotPID.target)
+//        telemetry.addData("Pivot Busy", pivotPID.isBusy())
         
         telemetry.addData("Wrist Position", wrist.getPosition())
         telemetry.addData("Claw Position", claw.getPosition())
