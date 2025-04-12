@@ -12,11 +12,11 @@ import org.firstinspires.ftc.teamcode.robot.*
 @Config
 class ScoreReadyMovement(
     hardwareMap: HardwareMap,
+    private val pivotPID: PivotPID,
+    private val slidePID: SlidePID,
     private val telemetry: Telemetry? = null
 ) {
     // Individual manipulators
-    private val slidePID = SlidePID(hardwareMap)
-    private val pivotPID = PivotPID(hardwareMap)
     private val elbow = Elbow(hardwareMap)
     private val wrist = Wrist(hardwareMap)
     private val claw = Claw(hardwareMap)
@@ -70,10 +70,11 @@ class ScoreReadyMovement(
                 // Wait for wrist and claw to reach position
                 if (elapsedTime >= 150) {
 
-                    // Step 2: Set elbow position
+                    pivotPID.setTarget(PivotPID.Position.SCORING_POSITION)
+                    slidePID.setTarget(SlidePID.Position.RETRACTED)
                     wrist.setPosition(Wrist.Position.MID)
                     elbow.setPosition(Elbow.Position.PARALLEL)
-                    
+
                     // Transition to next state
                     currentState = MovementState.STEP2
                     stateStartTime = currentTime
@@ -84,11 +85,15 @@ class ScoreReadyMovement(
             
             MovementState.STEP2 -> {
                 // Wait for elbow to reach position
-                if (elapsedTime >= 100) {
+                if (elapsedTime >= 250) {
                     // Step 3: Set rotate position
-                    rotate.setPosition(Rotate.RIGHT)
+
+                    // Step 2: Set elbow position
+                    wrist.setPosition(Wrist.Position.MID)
+                    elbow.setPosition(Elbow.Position.PARALLEL)
+
                     // Transition to next state
-                    currentState = MovementState.STEP3
+                    currentState = MovementState.IDLE
                     stateStartTime = currentTime
                     telemetry?.addData("Movement", "Travel Step 3: Setting rotate")
                     telemetry?.update()
@@ -97,15 +102,24 @@ class ScoreReadyMovement(
             
             MovementState.STEP3 -> {
                 // Wait for rotate to reach position and check if motors finished
-                if (elapsedTime >= 100) {
+                if (pivotPID.getCurrentPosition() <= PivotPID.Position.SCORING_POSITION.value.toInt()) {
+
+                    slidePID.setTarget(SlidePID.Position.HIGH_BASKET)
 
                     // Movement complete
-                    currentState = MovementState.STEP4
+                    currentState = MovementState.IDLE
                     telemetry?.addData("Movement", "Travel position complete")
                     telemetry?.update()
                 }
             }
             MovementState.STEP4 -> {
+
+                if (slidePID.getCurrentPosition() <= SlidePID.Position.HIGH_BASKET.value.toInt()) {
+
+                    elbow.setPosition(Elbow.Position.SCORE)
+                    rotate.setPosition(Rotate.Position.HORIZON)
+
+                }
                 // Wait for rotate to reach position and check if motors finished
                     currentState = MovementState.IDLE
             }

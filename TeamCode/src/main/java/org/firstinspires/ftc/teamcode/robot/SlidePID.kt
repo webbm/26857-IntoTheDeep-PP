@@ -17,8 +17,9 @@ class SlidePID(hardwareMap: HardwareMap) {
 
     enum class Position(val value: Double) {
         RETRACTED(0.0),
-        LOW_BASKET(500.0),
-        HIGH_BASKET(900.0);
+        LOW_BASKET(-600.0),
+        INTAKE(-850.0),
+        HIGH_BASKET(-1360.0);
     }
 
     init {
@@ -44,15 +45,15 @@ class SlidePID(hardwareMap: HardwareMap) {
         @JvmField var d = 0.0
         @JvmField var f = 0.0
         
-        @JvmField var MAX_EXTENSION = 1000.0
-        @JvmField var MIN_EXTENSION = -20.0
+        @JvmField var MAX_EXTENSION = -1300.0
+        @JvmField var MIN_EXTENSION = 20.0
     }
 
     fun setTarget(targetPosition: Double) {
         // Constrain target to valid range
         target = when {
-            targetPosition > MAX_EXTENSION -> MAX_EXTENSION
-            targetPosition < MIN_EXTENSION -> MIN_EXTENSION
+            targetPosition < MAX_EXTENSION -> MAX_EXTENSION
+            targetPosition > MIN_EXTENSION -> MIN_EXTENSION
             else -> targetPosition
         }
         isManualControl = false
@@ -68,9 +69,9 @@ class SlidePID(hardwareMap: HardwareMap) {
         val currentPosition = getCurrentPosition().toDouble()
         val safePower = when {
             // Don't allow extending past MAX_EXTENSION
-            currentPosition >= MAX_EXTENSION && power > 0 -> 0.0
+            currentPosition <= MAX_EXTENSION && power < 0 -> 0.0
             // Don't allow retracting past MIN_EXTENSION
-            currentPosition <= MIN_EXTENSION && power < 0 -> 0.0
+            currentPosition >= MIN_EXTENSION && power > 0 -> 0.0
             else -> power
         }
 

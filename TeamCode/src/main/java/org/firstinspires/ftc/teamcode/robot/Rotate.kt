@@ -14,7 +14,8 @@ class Rotate(hardwareMap: HardwareMap) {
     enum class Position(val value: Double) {
         LEFT_SAFE(0.2),
         SQUARE(0.5),
-        RIGHT(1.0),
+        RIGHT(0.8),
+        HORIZON(1.0),
         TRAVEL(0.5);
     }
 

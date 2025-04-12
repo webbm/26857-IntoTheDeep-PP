@@ -1,10 +1,9 @@
-package org.firstinspires.ftc.teamcode.Auto;
+package org.firstinspires.ftc.teamcode.auto;
 
 import com.pedropathing.util.Constants;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import pedroPathing.constants.RicoFConstants;
 import pedroPathing.constants.RicoLConstants;
-import pedroPathing.examples.ExampleBucketAuto;
 
 /**
  * Example bucket auto for the Rico robot.
@@ -12,11 +11,11 @@ import pedroPathing.examples.ExampleBucketAuto;
  * @author Baron Henderson - 20077 The Indubitables
  * @version 1.0, 3/22/2025
  */
-@Autonomous(name = "Auto - Rico")
-public class BucketAutoRico extends BucketAuto {
+@Autonomous(name = "Spec Auto - Rico")
+public class SpecAutoRico extends SpecAuto {
     
     @Override
-    protected void setConstants() {
+    public void setConstants() {
         Constants.setConstants(RicoFConstants.class, RicoLConstants.class);
     }
 }

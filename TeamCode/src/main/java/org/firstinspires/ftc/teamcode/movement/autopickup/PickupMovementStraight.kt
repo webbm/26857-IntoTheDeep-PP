@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.movement
+package org.firstinspires.ftc.teamcode.movement.autopickup
 
 import com.acmerobotics.dashboard.config.Config
 import com.qualcomm.robotcore.hardware.HardwareMap
@@ -10,7 +10,7 @@ import org.firstinspires.ftc.teamcode.robot.*
  * Uses a state machine approach with proper timing to ensure servos reach positions
  */
 @Config
-class PickupMovement(
+class PickupMovementStraight(
     hardwareMap: HardwareMap,
     private val telemetry: Telemetry? = null
 ) {
@@ -46,8 +46,8 @@ class PickupMovement(
         // Step 1: First start the motors moving (they're slow) and set wrist and claw
 //        slidePID.setTarget(SlidePID.Position.RETRACTED)
 //        pivotPID.setTarget(PivotPID.Position.FLOOR_POSITION)
-        wrist.setPosition(Wrist.Position.TRAVEL)
-        claw.setPosition(Claw.Position.TRAVEL)
+//        wrist.setPosition(Wrist.Position.TRAVEL)
+//        claw.setPosition(Claw.Position.TRAVEL)
         
         telemetry?.addData("Movement", "Starting Travel Position sequence")
         telemetry?.update()
@@ -62,7 +62,7 @@ class PickupMovement(
 //        slidePID.update()
 //        pivotPID.update()
 
-        if (slidePID.getCurrentPosition() <= 251){
+        if (slidePID.getCurrentPosition() >= -251){
             currentState = MovementState.IDLE
             return
         }
@@ -128,8 +128,9 @@ class PickupMovement(
             MovementState.COMPLETE -> {
                 if (elapsedTime >= 400) {
 
-                    elbow.setPosition(Elbow.Position.TRAVEL)
-                    wrist.setPosition(Wrist.Position.TRAVEL)
+                    elbow.setPosition(Elbow.Position.PICKUP)
+                    wrist.setPosition(Wrist.Position.PRONATED)
+                    rotate.setPosition(Rotate.Position.SQUARE)
 
                     // Movement complete
                     currentState = MovementState.IDLE

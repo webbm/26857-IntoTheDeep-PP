@@ -8,8 +8,11 @@ import com.arcrobotics.ftclib.gamepad.GamepadKeys
 import com.arcrobotics.ftclib.hardware.motors.Motor
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp
-import org.firstinspires.ftc.teamcode.robot.PivotPID
-import org.firstinspires.ftc.teamcode.robot.SlidePID
+import org.firstinspires.ftc.teamcode.movement.ScoreMovement
+import org.firstinspires.ftc.teamcode.movement.ScoreReadyMovement
+import org.firstinspires.ftc.teamcode.movement.TravelMovement
+import org.firstinspires.ftc.teamcode.movement.autopickup.PickupMovementStraight
+import org.firstinspires.ftc.teamcode.robot.*
 import org.firstinspires.ftc.teamcode.util.PS5Keys
 import kotlin.math.abs
 import kotlin.math.max
@@ -43,6 +46,11 @@ class MainTeleNew : LinearOpMode() {
             setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE)
         }
         val driveTrain = MecanumDrive(frontLeft, frontRight, backLeft, backRight)
+
+        val elbow = Elbow(hardwareMap)
+        val wrist = Wrist(hardwareMap)
+        val claw = Claw(hardwareMap)
+        val rotate = Rotate(hardwareMap)
 
         // Wait for the start button to be pressed
         waitForStart()
