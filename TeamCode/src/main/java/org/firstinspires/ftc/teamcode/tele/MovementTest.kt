@@ -1,6 +1,5 @@
 package org.firstinspires.ftc.teamcode.tele
 
-import androidx.core.graphics.scaleMatrix
 import com.acmerobotics.dashboard.FtcDashboard
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry
 import com.arcrobotics.ftclib.drivebase.MecanumDrive
@@ -9,6 +8,7 @@ import com.arcrobotics.ftclib.gamepad.TriggerReader
 import com.arcrobotics.ftclib.hardware.motors.Motor
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp
+import com.qualcomm.robotcore.hardware.Gamepad.RumbleEffect
 import org.firstinspires.ftc.teamcode.movement.PickupReadyMovement
 import org.firstinspires.ftc.teamcode.movement.ScoreMovement
 import org.firstinspires.ftc.teamcode.movement.ScoreReadyMovement
@@ -41,7 +41,9 @@ class MovementTest : LinearOpMode() {
         // Initialize gamepad
         val driverGamepad = GamepadEx(gamepad1)
         val manipulatorGamepad = GamepadEx(gamepad2)
-        
+        val leftTriggerReader = TriggerReader(manipulatorGamepad, PS5Keys.Trigger.LEFT_TRIGGER.xboxTrigger)
+        val rightTriggerReader = TriggerReader(manipulatorGamepad, PS5Keys.Trigger.RIGHT_TRIGGER.xboxTrigger)
+
         // Initialize drive motors
         val frontLeft = Motor(hardwareMap, "left_front", Motor.GoBILDA.RPM_1150).apply {
             setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE)
@@ -70,13 +72,15 @@ class MovementTest : LinearOpMode() {
         telemetry.addData("Status", "Initialized")
         telemetry.addData("Controls", "Y button: Travel Position")
         telemetry.update()
-        
+
         waitForStart()
         
         while (opModeIsActive()) {
             // Read gamepad inputs
             driverGamepad.readButtons()
             manipulatorGamepad.readButtons()
+            leftTriggerReader.readValue()
+            rightTriggerReader.readValue()
             
             // Check for movement commands
           /*  if (manipulatorGamepad.wasJustPressed(PS5Keys.Button.TRIANGLE.xboxButton)) {
@@ -88,8 +92,26 @@ class MovementTest : LinearOpMode() {
                 telemetry.addData("Command", "Travel Position initiated")
             }*/
 
-            val leftTriggerReader = TriggerReader(manipulatorGamepad, PS5Keys.Trigger.LEFT_TRIGGER.xboxTrigger)
+            if (rightTriggerReader.wasJustPressed()) {
+                pickupReadyMovement.setPickupPosition()
+            }
+            else if (rightTriggerReader.wasJustReleased()) {
+                pickupMovementStraight.setPickupPosition()
+            }
 
+            if (leftTriggerReader.wasJustPressed()) {
+                scoreMovement.setPickupPosition()
+            }
+
+            pickupReadyMovement.update()
+            pickupMovementStraight.update() {
+                manipulatorGamepad.gamepad.runRumbleEffect(
+                    RumbleEffect.Builder().addStep(1.0, 1.0, 1000).build(),
+                )
+            }
+            scoreMovement.update()
+
+            /*
             if (manipulatorGamepad.wasJustPressed(PS5Keys.Button.LEFT_BUMPER.xboxButton)) {
                 scoreReadyMovement.setPickupPosition()
             }
@@ -154,6 +176,7 @@ class MovementTest : LinearOpMode() {
             pickupMovement45Right.update()
             scoreMovement.update()
             scoreReadyMovement.update()
+             */
 
             /* if (manipulatorGamepad.wasJustPressed(PS5Keys.Button.RIGHT_BUMPER.xboxButton)) {
                pivotPID.setTarget(position = PivotPID.Position.SCORING_POSITION)

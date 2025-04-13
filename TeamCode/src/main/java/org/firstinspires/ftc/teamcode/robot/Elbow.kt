@@ -14,12 +14,13 @@ class Elbow(hardwareMap: HardwareMap) {
     }
 
     enum class Position(val value: Double) {
-        PARALLEL(0.3),
+        PARALLEL(0.2),
         GOIN_UP(0.5),
         EXTENDED(0.8),
-        TRAVEL(0.75),
-        SCORE(0.8),
-        PICKUP(0.45);
+        TRAVEL(0.7),
+        SCORE(0.7),
+        HUNTING(0.45),
+        PICKUP(0.18),;
     }
 
     init {

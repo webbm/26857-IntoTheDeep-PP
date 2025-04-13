@@ -58,10 +58,6 @@ class PickupReadyMovement(
      * Call this method regularly (in the opMode loop)
      */
     fun update() {
-        // Always update the PID controllers
-//        slidePID.update()
-//        pivotPID.update()
-
         val currentTime = System.currentTimeMillis()
         val elapsedTime = currentTime - stateStartTime
         
@@ -70,9 +66,13 @@ class PickupReadyMovement(
                 // Wait for wrist and claw to reach position
                 if (elapsedTime >= 150) {
 
-                    wrist.setPosition(Wrist.Position.PRONATED)
-                    elbow.setPosition(Elbow.Position.PICKUP)
-                    slidePID.setTarget(SlidePID.Position.INTAKE)
+                    wrist.setPosition(0.0)
+                    elbow.setPosition(0.35)
+
+                    if (slidePID.getCurrentPosition() > SlidePID.Position.INTAKE.value) {
+                        // only move the slide out if it's too close to the bot
+                        slidePID.setTarget(SlidePID.Position.INTAKE)
+                    }
 
                     // Transition to next state
                     currentState = MovementState.STEP2
@@ -83,43 +83,17 @@ class PickupReadyMovement(
             }
             
             MovementState.STEP2 -> {
-                // Wait for elbow to reach position
-                if (elapsedTime >= 250) {
-                    // Step 3: Set rotate position
-                    // Step 2: Set elbow position
-//                    wrist.setPosition(Wrist.Position.MID)
-//                    elbow.setPosition(Elbow.Position.PARALLEL)
-
-                    // Transition to next state
-                    currentState = MovementState.IDLE
-                    stateStartTime = currentTime
-                    telemetry?.addData("Movement", "Travel Step 3: Setting rotate")
-                    telemetry?.update()
-                }
+                //nothing
+                currentState = MovementState.IDLE
             }
-            
+
             MovementState.STEP3 -> {
-                // Wait for rotate to reach position and check if motors finished
-                if (pivotPID.getCurrentPosition() <= PivotPID.Position.SCORING_POSITION.value.toInt()) {
-
-                    slidePID.setTarget(SlidePID.Position.HIGH_BASKET)
-
-                    // Movement complete
-                    currentState = MovementState.IDLE
-                    telemetry?.addData("Movement", "Travel position complete")
-                    telemetry?.update()
-                }
+                //nothing
+                currentState = MovementState.IDLE
             }
             MovementState.STEP4 -> {
-
-                if (slidePID.getCurrentPosition() <= SlidePID.Position.HIGH_BASKET.value.toInt()) {
-
-                    elbow.setPosition(Elbow.Position.SCORE)
-                    rotate.setPosition(Rotate.Position.HORIZON)
-
-                }
-                // Wait for rotate to reach position and check if motors finished
-                    currentState = MovementState.IDLE
+                //nothing
+                currentState = MovementState.IDLE
             }
             MovementState.COMPLETE -> {
                 // Idle state, no movement in progress

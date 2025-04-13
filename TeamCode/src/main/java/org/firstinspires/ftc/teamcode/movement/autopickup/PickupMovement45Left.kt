@@ -128,7 +128,7 @@ class PickupMovement45Left(
             MovementState.COMPLETE -> {
                 if (elapsedTime >= 400) {
 
-                    elbow.setPosition(Elbow.Position.PICKUP)
+                    elbow.setPosition(Elbow.Position.HUNTING)
                     wrist.setPosition(Wrist.Position.PRONATED)
                     rotate.setPosition(Rotate.Position.SQUARE)
 

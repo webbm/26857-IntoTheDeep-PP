@@ -57,13 +57,12 @@ class PickupMovementStraight(
      * Updates the state machine and servo positions
      * Call this method regularly (in the opMode loop)
      */
-    fun update() {
+    fun update(rejectedBehavior: () -> Unit = {}) {
         // Always update the PID controllers
-//        slidePID.update()
-//        pivotPID.update()
 
-        if (slidePID.getCurrentPosition() >= -251){
+        if (slidePID.getCurrentPosition() >= SlidePID.Position.INTAKE.value){
             currentState = MovementState.IDLE
+            rejectedBehavior()
             return
         }
         
@@ -91,7 +90,8 @@ class PickupMovementStraight(
                 // Wait for elbow to reach position
                 if (elapsedTime >= 100) {
                     // Step 3: Set rotate position
-                    elbow.setPosition(Elbow.Position.PARALLEL)
+                    rotate.setPosition(Rotate.Position.SQUARE)
+                    elbow.setPosition(Elbow.Position.PICKUP)
                     // Transition to next state
                     currentState = MovementState.STEP3
                     stateStartTime = currentTime
@@ -101,20 +101,12 @@ class PickupMovementStraight(
             }
             
             MovementState.STEP3 -> {
-                // Wait for rotate to reach position and check if motors finished
-                if (elapsedTime >= 100) {
-
-                    rotate.setPosition(Rotate.Position.SQUARE)
-
-                    // Movement complete
-                    currentState = MovementState.STEP4
-                    telemetry?.addData("Movement", "Travel position complete")
-                    telemetry?.update()
-                }
+                //nothing
+                currentState = MovementState.STEP4
             }
             MovementState.STEP4 -> {
                 // Wait for rotate to reach position and check if motors finished
-                if (elapsedTime >= 250) {
+                if (elapsedTime >= 400) {
 
                     claw.setPosition(Claw.Position.CLOSED)
 
@@ -126,9 +118,9 @@ class PickupMovementStraight(
             }
             
             MovementState.COMPLETE -> {
-                if (elapsedTime >= 400) {
+                if (elapsedTime >= 200) {
 
-                    elbow.setPosition(Elbow.Position.PICKUP)
+                    elbow.setPosition(Elbow.Position.TRAVEL)
                     wrist.setPosition(Wrist.Position.PRONATED)
                     rotate.setPosition(Rotate.Position.SQUARE)
 

@@ -18,7 +18,7 @@ class SlidePID(hardwareMap: HardwareMap) {
     enum class Position(val value: Double) {
         RETRACTED(0.0),
         LOW_BASKET(-600.0),
-        INTAKE(-850.0),
+        INTAKE(-300.0),
         HIGH_BASKET(-1360.0);
     }
 
@@ -46,7 +46,7 @@ class SlidePID(hardwareMap: HardwareMap) {
         @JvmField var f = 0.0
         
         @JvmField var MAX_EXTENSION = -1300.0
-        @JvmField var MIN_EXTENSION = 20.0
+        @JvmField var MIN_EXTENSION = 110.0
     }
 
     fun setTarget(targetPosition: Double) {

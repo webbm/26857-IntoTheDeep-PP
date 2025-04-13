@@ -12,7 +12,7 @@ import pedroPathing.constants.ValLConstants
 
 
 @Autonomous(name = "Pedro Path Drew Auto")
-abstract class PedroPathDrewAuto : LinearOpMode() {
+class PedroPathDrewAuto : LinearOpMode() {
     private lateinit var follower: Follower
     private lateinit var pathTimer: Timer
     private lateinit var generatedPathChain: PathChain
@@ -81,8 +81,6 @@ abstract class PedroPathDrewAuto : LinearOpMode() {
             autonomousPathUpdate()
         }
     }
-
-    abstract fun setConstants()
 }
 
 class GeneratedPath {

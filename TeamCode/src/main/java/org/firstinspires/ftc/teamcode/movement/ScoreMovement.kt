@@ -1,11 +1,9 @@
 package org.firstinspires.ftc.teamcode.movement
 
-import android.os.SystemClock.sleep
 import com.acmerobotics.dashboard.config.Config
 import com.qualcomm.robotcore.hardware.HardwareMap
 import org.firstinspires.ftc.robotcore.external.Telemetry
 import org.firstinspires.ftc.teamcode.robot.*
-import kotlin.math.E
 
 /**
  * Handles complex movements that coordinate multiple manipulators
@@ -44,13 +42,7 @@ class ScoreMovement(
     fun setPickupPosition() {
         currentState = MovementState.STEP1
         stateStartTime = System.currentTimeMillis()
-        
-        // Step 1: First start the motors moving (they're slow) and set wrist and claw
-//        slidePID.setTarget(SlidePID.Position.RETRACTED)
-//        pivotPID.setTarget(PivotPID.Position.FLOOR_POSITION)
-//        wrist.setPosition(Wrist.Position.TRAVEL)
-//        claw.setPosition(Claw.Position.TRAVEL)
-        
+
         telemetry?.addData("Movement", "Starting Travel Position sequence")
         telemetry?.update()
     }
@@ -60,12 +52,6 @@ class ScoreMovement(
      * Call this method regularly (in the opMode loop)
      */
     fun update() {
-        // Always update the PID controllers
-//        slidePID.update()
-//        pivotPID.update()
-
-
-        
         val currentTime = System.currentTimeMillis()
         val elapsedTime = currentTime - stateStartTime
         
@@ -74,7 +60,7 @@ class ScoreMovement(
                 // Wait for wrist and claw to reach position
                 if (elapsedTime >= 150) {
 
-                    rotate.setPosition(Rotate.Position.HORIZON)
+                    rotate.setPosition(Rotate.Position.SQUARE)
                     elbow.setPosition(Elbow.Position.SCORE)
 
                     // Step 2: Set elbow position
@@ -106,6 +92,7 @@ class ScoreMovement(
 
 //                    claw.setPosition(Claw.Position.CLOSED)
                     elbow.setPosition(Elbow.Position.PARALLEL)                    // Movement complete
+                    wrist.setPosition(Wrist.Position.MID)
 
                     currentState = MovementState.STEP4
                     telemetry?.addData("Movement", "Travel position complete")
@@ -115,10 +102,7 @@ class ScoreMovement(
             MovementState.STEP4 -> {
                 // Wait for rotate to reach position and check if motors finished
                 if (elapsedTime >= 250) {
-
                     rotate.setPosition(Rotate.TRAVEL)
-                    elbow.setPosition(Elbow.Position.PARALLEL)
-                    wrist.setPosition(Wrist.Position.TRAVEL)
 
                     // Movement complete
                     currentState = MovementState.COMPLETE

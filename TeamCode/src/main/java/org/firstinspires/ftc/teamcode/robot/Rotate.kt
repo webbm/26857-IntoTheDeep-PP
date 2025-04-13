@@ -12,7 +12,7 @@ class Rotate(hardwareMap: HardwareMap) {
     private val servo: Servo = hardwareMap.get(Servo::class.java, "rotate")
 
     enum class Position(val value: Double) {
-        LEFT_SAFE(0.2),
+        LEFT_SAFE(0.3),
         SQUARE(0.5),
         RIGHT(0.8),
         HORIZON(1.0),

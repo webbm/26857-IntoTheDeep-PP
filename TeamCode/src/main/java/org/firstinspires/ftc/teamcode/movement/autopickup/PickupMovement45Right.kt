@@ -75,7 +75,7 @@ class PickupMovement45Right(
                 // Wait for wrist and claw to reach position
                 if (elapsedTime >= 150) {
 
-                    elbow.setPosition(Elbow.Position.PICKUP)
+                    elbow.setPosition(Elbow.Position.HUNTING)
 
                     // Step 2: Set elbow position
                     claw.setPosition(Claw.Position.OPEN)
@@ -130,7 +130,7 @@ class PickupMovement45Right(
             MovementState.COMPLETE -> {
                 if (elapsedTime >= 400) {
 
-                    elbow.setPosition(Elbow.Position.PICKUP)
+                    elbow.setPosition(Elbow.Position.HUNTING)
                     wrist.setPosition(Wrist.Position.PRONATED)
                     rotate.setPosition(Rotate.Position.SQUARE)
 
