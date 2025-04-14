@@ -3,6 +3,7 @@ package pedroPathing.tuners_tests.automatic;
 import com.pedropathing.util.Constants;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import pedroPathing.constants.RicoFConstants;
 import pedroPathing.constants.RicoLConstants;
 
@@ -15,6 +16,7 @@ import pedroPathing.constants.RicoLConstants;
  * @version 1.0, 3/22/2025
  */
 @Autonomous(name = "Forward Velocity Tuner - Rico", group = "Automatic Tuners")
+@Disabled
 public class ForwardVelocityTunerRico extends ForwardVelocityTuner {
     
     @Override

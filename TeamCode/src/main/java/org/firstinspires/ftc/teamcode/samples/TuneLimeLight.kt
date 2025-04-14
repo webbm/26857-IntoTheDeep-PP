@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.samples
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp
 import com.qualcomm.robotcore.hardware.Servo
@@ -7,6 +8,7 @@ import org.firstinspires.ftc.teamcode.robot.Elbow
 import org.firstinspires.ftc.teamcode.robot.Wrist
 
 @TeleOp
+@Disabled
 class TuneLimeLight : LinearOpMode() {
 
     private lateinit var claw: Servo

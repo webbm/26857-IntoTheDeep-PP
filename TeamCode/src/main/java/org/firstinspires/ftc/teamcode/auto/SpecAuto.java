@@ -16,7 +16,7 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
  * @author Baron Henderson - 20077 The Indubitables
  * @version 3.0, 3/22/2025
  */
-@Autonomous(name = "Spec Auto")
+
 public abstract class SpecAuto extends OpMode {
 
     protected Follower follower;

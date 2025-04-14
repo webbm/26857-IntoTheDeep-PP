@@ -3,6 +3,7 @@ package pedroPathing.tuners_tests.pid;
 import com.pedropathing.util.Constants;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import pedroPathing.constants.ValFConstants;
 import pedroPathing.constants.ValLConstants;
 
@@ -15,6 +16,7 @@ import pedroPathing.constants.ValLConstants;
  * @version 1.0, 3/22/2025
  */
 @Autonomous(name = "Straight Back And Forth - Val", group = "PIDF Tuning")
+@Disabled
 public class StraightBackAndForthVal extends StraightBackAndForth {
     
     @Override

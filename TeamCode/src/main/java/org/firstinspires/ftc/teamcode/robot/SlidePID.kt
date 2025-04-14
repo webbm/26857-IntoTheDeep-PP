@@ -46,7 +46,7 @@ class SlidePID(hardwareMap: HardwareMap) {
         @JvmField var f = 0.0
         
         @JvmField var MAX_EXTENSION = -1300.0
-        @JvmField var MIN_EXTENSION = 110.0
+        @JvmField var MIN_EXTENSION = 150.0
     }
 
     fun setTarget(targetPosition: Double) {

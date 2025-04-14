@@ -25,7 +25,7 @@ import kotlin.math.max
 /**
  * Test OpMode for complex movements including Travel Position
  */
-@TeleOp(name = "Movement Test")
+@TeleOp(name = "Main Tele Worlds")
 class MovementTest : LinearOpMode() {
 
     override fun runOpMode() {
@@ -61,7 +61,7 @@ class MovementTest : LinearOpMode() {
         
         // Initialize complex movement handler
         val travelMovement = TravelMovement(hardwareMap, telemetry)
-        val pickupMovementStraight = PickupMovementStraight(hardwareMap, telemetry)
+        val pickupMovementStraight = PickupMovementStraight(hardwareMap, pivotPID, slidePID, telemetry)
         val pickupReadyMovement = PickupReadyMovement(hardwareMap, pivotPID, slidePID, telemetry)
         val pickupMovementHorizontal = PickupMovementHorizontal(hardwareMap, telemetry)
         val pickupMovement45Right = PickupMovement45Right(hardwareMap, telemetry)
@@ -104,11 +104,7 @@ class MovementTest : LinearOpMode() {
             }
 
             pickupReadyMovement.update()
-            pickupMovementStraight.update() {
-                manipulatorGamepad.gamepad.runRumbleEffect(
-                    RumbleEffect.Builder().addStep(1.0, 1.0, 1000).build(),
-                )
-            }
+            pickupMovementStraight.update()
             scoreMovement.update()
 
             /*
@@ -195,23 +191,32 @@ class MovementTest : LinearOpMode() {
             }*/
 
             val pivotStickY = -manipulatorGamepad.leftY  // NOT inverted - stick up (negative Y) = scoring position
+            val pivotPosition = pivotPID.getCurrentPosition()
 
-            // Apply deadzone to prevent drift
-            if (abs(pivotStickY) > 0.1) {
-                // Map the stick position to a target value
-                // When stick is pushed up (negative Y) = SCORING_POSITION
-                // When stick is pulled down (positive Y) = FLOOR_POSITION
-                if (pivotStickY < 0) {
-                    // When stick is pushed up (negative Y), go to scoring position
-                    pivotPID.setTarget(PivotPID.Position.SCORING_POSITION)
-                    elbow.setPosition(Elbow.Position.PARALLEL)
-                } else {
-                    // When stick is pulled down (positive Y), go to floor position
-                    pivotPID.setTarget(PivotPID.Position.FLOOR_POSITION)
-                    elbow.setPosition(Elbow.Position.TRAVEL)
+
+            if (pivotPosition > -900 || slidePID.getCurrentPosition() > -100) {
+                if (abs(pivotStickY) > 0.1) {
+                    // Map the stick position to a target value
+                    // When stick is pushed up (negative Y) = SCORING_POSITION
+                    // When stick is pulled down (positive Y) = FLOOR_POSITION
+                    if (pivotStickY < 0) {
+                        // When stick is pushed up (negative Y), go to scoring position
+                        pivotPID.setTarget(PivotPID.Position.SCORING_POSITION)
+                        elbow.setPosition(Elbow.Position.PARALLEL)
+                    } else {
+                        // When stick is pulled down (positive Y), go to floor position
+                        pivotPID.setTarget(PivotPID.Position.FLOOR_POSITION)
+                        elbow.setPosition(Elbow.Position.TRAVEL)
+                    }
                 }
             }
             pivotPID.update()
+
+            if (manipulatorGamepad.wasJustPressed(PS5Keys.Button.DPAD_UP.xboxButton)) {
+                slidePID.setTarget(SlidePID.Position.HIGH_BASKET)
+            } else if (manipulatorGamepad.wasJustPressed(PS5Keys.Button.DPAD_DOWN.xboxButton)) {
+                slidePID.setTarget(SlidePID.Position.LOW_BASKET)
+            }
 
             val slideStickY = -manipulatorGamepad.rightY  // Invert for intuitive control (stick up = extend)
 
@@ -242,6 +247,7 @@ class MovementTest : LinearOpMode() {
             // Display telemetry
             telemetry.addData("Status", "Running")
             telemetry.addData("slide", slidePID.getCurrentPosition())
+            telemetry.addData("Pivot", pivotPID.getCurrentPosition())
 //            travelMovement.addTelemetry(telemetry)
             telemetry.update()
         }

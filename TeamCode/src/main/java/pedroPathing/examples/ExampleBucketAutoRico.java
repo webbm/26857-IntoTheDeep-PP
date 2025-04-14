@@ -3,6 +3,7 @@ package pedroPathing.examples;
 import com.pedropathing.util.Constants;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import pedroPathing.constants.RicoFConstants;
 import pedroPathing.constants.RicoLConstants;
 
@@ -13,6 +14,7 @@ import pedroPathing.constants.RicoLConstants;
  * @version 1.0, 3/22/2025
  */
 @Autonomous(name = "Example Auto Blue - Rico", group = "Examples")
+@Disabled
 public class ExampleBucketAutoRico extends ExampleBucketAuto {
     
     @Override

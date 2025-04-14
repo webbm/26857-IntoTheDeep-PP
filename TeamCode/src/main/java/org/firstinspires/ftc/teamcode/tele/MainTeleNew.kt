@@ -6,6 +6,7 @@ import com.arcrobotics.ftclib.drivebase.MecanumDrive
 import com.arcrobotics.ftclib.gamepad.GamepadEx
 import com.arcrobotics.ftclib.gamepad.GamepadKeys
 import com.arcrobotics.ftclib.hardware.motors.Motor
+import com.qualcomm.robotcore.eventloop.opmode.Disabled
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp
 import org.firstinspires.ftc.teamcode.movement.ScoreMovement
@@ -18,6 +19,7 @@ import kotlin.math.abs
 import kotlin.math.max
 
 @TeleOp(name = "Main Tele New")
+@Disabled
 class MainTeleNew : LinearOpMode() {
 
     override fun runOpMode() {

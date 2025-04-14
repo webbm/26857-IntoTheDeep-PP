@@ -11,7 +11,7 @@ import pedroPathing.constants.RicoLConstants;
  * @author Baron Henderson - 20077 The Indubitables
  * @version 1.0, 3/22/2025
  */
-@Autonomous(name = "Auto - Rico")
+@Autonomous(name = "Bucket Auto - Rico!")
 public class BucketAutoRico extends BucketAuto {
     
     @Override

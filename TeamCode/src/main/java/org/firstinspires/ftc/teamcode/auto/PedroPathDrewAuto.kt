@@ -6,12 +6,14 @@ import com.pedropathing.pathgen.*
 import com.pedropathing.util.Constants
 import com.pedropathing.util.Timer
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous
+import com.qualcomm.robotcore.eventloop.opmode.Disabled
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import pedroPathing.constants.ValFConstants
 import pedroPathing.constants.ValLConstants
 
 
 @Autonomous(name = "Pedro Path Drew Auto")
+@Disabled
 class PedroPathDrewAuto : LinearOpMode() {
     private lateinit var follower: Follower
     private lateinit var pathTimer: Timer

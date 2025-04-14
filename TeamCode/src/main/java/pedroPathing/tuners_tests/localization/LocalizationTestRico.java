@@ -1,6 +1,7 @@
 package pedroPathing.tuners_tests.localization;
 
 import com.pedropathing.util.Constants;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import pedroPathing.constants.RicoFConstants;
@@ -13,6 +14,7 @@ import pedroPathing.constants.RicoLConstants;
  * @version 1.0, 3/22/2025
  */
 @TeleOp(name = "Localization Test - Rico", group = "Teleop Test")
+@Disabled
 public class LocalizationTestRico extends LocalizationTest {
     
     @Override

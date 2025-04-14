@@ -1,16 +1,18 @@
-package org.firstinspires.ftc.teamcode.movement
+package org.firstinspires.ftc.teamcode.movement.autoscore
 
+import android.os.SystemClock.sleep
 import com.acmerobotics.dashboard.config.Config
 import com.qualcomm.robotcore.hardware.HardwareMap
 import org.firstinspires.ftc.robotcore.external.Telemetry
 import org.firstinspires.ftc.teamcode.robot.*
+import kotlin.math.E
 
 /**
  * Handles complex movements that coordinate multiple manipulators
  * Uses a state machine approach with proper timing to ensure servos reach positions
  */
 @Config
-class PickupReadyMovement(
+class AutoScoreMovement(
     hardwareMap: HardwareMap,
     private val pivotPID: PivotPID,
     private val slidePID: SlidePID,
@@ -32,6 +34,8 @@ class PickupReadyMovement(
         STEP2,
         STEP3,
         STEP4,
+        STEP5,
+        STEP6,
         COMPLETE
     }
     
@@ -44,7 +48,7 @@ class PickupReadyMovement(
         stateStartTime = System.currentTimeMillis()
         
         // Step 1: First start the motors moving (they're slow) and set wrist and claw
-//        slidePID.setTarget(SlidePID.Position.INTAKE)
+//        slidePID.setTarget(SlidePID.Position.RETRACTED)
 //        pivotPID.setTarget(PivotPID.Position.FLOOR_POSITION)
 //        wrist.setPosition(Wrist.Position.TRAVEL)
 //        claw.setPosition(Claw.Position.TRAVEL)
@@ -58,6 +62,12 @@ class PickupReadyMovement(
      * Call this method regularly (in the opMode loop)
      */
     fun update() {
+        // Always update the PID controllers
+//        slidePID.update()
+//        pivotPID.update()
+
+
+        
         val currentTime = System.currentTimeMillis()
         val elapsedTime = currentTime - stateStartTime
         
@@ -66,15 +76,11 @@ class PickupReadyMovement(
                 // Wait for wrist and claw to reach position
                 if (elapsedTime >= 150) {
 
-                    wrist.setPosition(0.0)
-                    elbow.setPosition(0.35)
+                    rotate.setPosition(Rotate.Position.HORIZON)
+                    elbow.setPosition(Elbow.Position.SCORE)
+                    wrist.setPosition(Wrist.Position.MID)
 
-                    if (slidePID.getCurrentPosition() > SlidePID.Position.INTAKE.value) {
-                        // only move the slide out if it's too close to the bot
-                        slidePID.setTarget(SlidePID.Position.INTAKE)
-                    }
-
-                    // Transition to next state
+                    // Step 2: Set elbow position
                     currentState = MovementState.STEP2
                     stateStartTime = currentTime
                     telemetry?.addData("Movement", "Travel Step 2: Setting elbow")
@@ -83,19 +89,81 @@ class PickupReadyMovement(
             }
             
             MovementState.STEP2 -> {
-                //nothing
-                currentState = MovementState.IDLE
-            }
+                // Wait for elbow to reach position
+                if (elapsedTime >= 250) {
+                    // Step 3: Set rotate position
 
+                    claw.setPosition(Claw.Position.OPEN)
+
+                    // Transition to next state
+                    currentState = MovementState.STEP3
+                    stateStartTime = currentTime
+                    telemetry?.addData("Movement", "Travel Step 3: Setting rotate")
+                    telemetry?.update()
+                }
+            }
+            
             MovementState.STEP3 -> {
-                //nothing
-                currentState = MovementState.IDLE
+                // Wait for rotate to reach position and check if motors finished
+                if (elapsedTime >= 200) {
+
+//                    claw.setPosition(Claw.Position.CLOSED)
+                    elbow.setPosition(Elbow.Position.PARALLEL)                    // Movement complete
+
+                    currentState = MovementState.STEP4
+                    telemetry?.addData("Movement", "Travel position complete")
+                    telemetry?.update()
+                }
             }
             MovementState.STEP4 -> {
-                //nothing
-                currentState = MovementState.IDLE
+                // Wait for rotate to reach position and check if motors finished
+                if (elapsedTime >= 250) {
+
+                    rotate.setPosition(Rotate.TRAVEL)
+                    elbow.setPosition(Elbow.Position.PARALLEL)
+                    wrist.setPosition(Wrist.Position.TRAVEL)
+
+                    // Movement complete
+                    currentState = MovementState.STEP5
+                    telemetry?.addData("Movement", "Travel position complete")
+                    telemetry?.update()
+                }
+            }
+            MovementState.STEP5 -> {
+                // Wait for rotate to reach position and check if motors finished
+                if (elapsedTime >= 250) {
+
+                    slidePID.setTarget(SlidePID.Position.RETRACTED)
+
+                    // Movement complete
+                    currentState = MovementState.STEP6
+                    telemetry?.addData("Movement", "Travel position complete")
+                    telemetry?.update()
+                }
+            }
+            MovementState.STEP6 -> {
+                // Wait for rotate to reach position and check if motors finished
+                if (elapsedTime >= 250) {
+
+                    elbow.setPosition(Rotate.TRAVEL)
+
+                    // Movement complete
+                    currentState = MovementState.STEP6
+                    telemetry?.addData("Movement", "Travel position complete")
+                    telemetry?.update()
+                }
             }
             MovementState.COMPLETE -> {
+
+                if (elapsedTime >= 250) {
+
+//                    elbow.setPosition(Elbow.Position.TRAVEL)
+                    pivotPID.setTarget(PivotPID.Position.FLOOR_POSITION)
+                    // Movement complete
+                    currentState = MovementState.IDLE
+                    telemetry?.addData("Movement", "Travel position complete")
+                    telemetry?.update()
+                }
                 // Idle state, no movement in progress
                 currentState = MovementState.IDLE
             }

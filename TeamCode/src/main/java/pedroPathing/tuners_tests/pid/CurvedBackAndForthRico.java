@@ -3,6 +3,7 @@ package pedroPathing.tuners_tests.pid;
 import com.pedropathing.util.Constants;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import pedroPathing.constants.RicoFConstants;
 import pedroPathing.constants.RicoLConstants;
 
@@ -15,6 +16,7 @@ import pedroPathing.constants.RicoLConstants;
  * @version 1.0, 3/22/2025
  */
 @Autonomous(name = "Curved Back And Forth - Rico", group = "PIDF Testing")
+@Disabled
 public class CurvedBackAndForthRico extends CurvedBackAndForth {
     
     @Override

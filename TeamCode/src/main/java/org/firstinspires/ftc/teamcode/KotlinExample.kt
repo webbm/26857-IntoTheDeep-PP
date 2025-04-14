@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp
 import com.qualcomm.robotcore.hardware.DcMotor
@@ -9,6 +10,7 @@ import com.qualcomm.robotcore.util.ElapsedTime
  * Example OpMode written in Kotlin to demonstrate Kotlin support
  */
 @TeleOp(name = "Kotlin Example", group = "Examples")
+@Disabled
 class KotlinExample : LinearOpMode() {
     // Declare OpMode members
     private val runtime = ElapsedTime()

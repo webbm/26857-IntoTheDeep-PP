@@ -12,11 +12,11 @@ import org.firstinspires.ftc.teamcode.robot.*
 @Config
 class PickupMovementStraight(
     hardwareMap: HardwareMap,
+    private val pivotPID: PivotPID,
+    private val slidePID: SlidePID,
     private val telemetry: Telemetry? = null
 ) {
     // Individual manipulators
-    private val slidePID = SlidePID(hardwareMap)
-    private val pivotPID = PivotPID(hardwareMap)
     private val elbow = Elbow(hardwareMap)
     private val wrist = Wrist(hardwareMap)
     private val claw = Claw(hardwareMap)
@@ -40,9 +40,16 @@ class PickupMovementStraight(
      * Follows coordinated sequence with timing to ensure safe movement
      */
     fun setPickupPosition() {
-        currentState = MovementState.STEP1
-        stateStartTime = System.currentTimeMillis()
-        
+        val currentTime = System.currentTimeMillis()
+        val elapsedTime = currentTime - stateStartTime
+
+        rotate.setPosition(Rotate.Position.SQUARE)
+        elbow.setPosition(Elbow.Position.PICKUP)
+
+        if (elapsedTime >= 250) {
+            claw.setPosition(Claw.Position.CLOSED)
+        }
+
         // Step 1: First start the motors moving (they're slow) and set wrist and claw
 //        slidePID.setTarget(SlidePID.Position.RETRACTED)
 //        pivotPID.setTarget(PivotPID.Position.FLOOR_POSITION)
@@ -57,12 +64,11 @@ class PickupMovementStraight(
      * Updates the state machine and servo positions
      * Call this method regularly (in the opMode loop)
      */
-    fun update(rejectedBehavior: () -> Unit = {}) {
+    fun update() {
         // Always update the PID controllers
 
         if (slidePID.getCurrentPosition() >= SlidePID.Position.INTAKE.value){
             currentState = MovementState.IDLE
-            rejectedBehavior()
             return
         }
         
@@ -120,6 +126,7 @@ class PickupMovementStraight(
             MovementState.COMPLETE -> {
                 if (elapsedTime >= 200) {
 
+                    slidePID.setTarget(SlidePID.Position.RETRACTED)
                     elbow.setPosition(Elbow.Position.TRAVEL)
                     wrist.setPosition(Wrist.Position.PRONATED)
                     rotate.setPosition(Rotate.Position.SQUARE)
