@@ -18,6 +18,9 @@ class AutoPickupReadyMovement(
     private val slidePID: SlidePID,
     private val telemetry: Telemetry? = null
 ) {
+
+    object AutoPickupReadyMovementVariables {
+    }
     // Individual manipulators
     private val elbow = Elbow(hardwareMap)
     private val wrist = Wrist(hardwareMap)
@@ -90,7 +93,7 @@ class AutoPickupReadyMovement(
             }
             MovementState.STEP3 -> {
                 // Wait for rotate to reach position and check if motors finished
-                if (elapsedTime >= 300) {
+                if (elapsedTime >= 800) {
 
                     elbow.setPosition(Elbow.Position.PICKUP)
                     claw.setPosition(Claw.Position.CLOSED)
@@ -144,7 +147,7 @@ class AutoPickupReadyMovement(
      * Returns if any complex movement is currently in progress
      */
     fun isMovementInProgress(): Boolean {
-        return currentState == MovementState.IDLE &&
+        return currentState != MovementState.IDLE &&
                 currentState != MovementState.COMPLETE
     }
 

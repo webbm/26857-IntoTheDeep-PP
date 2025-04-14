@@ -177,148 +177,42 @@ public abstract class BucketAuto extends OpMode {
         switch (pathState) {
             case 0:
                 follower.followPath(scorePreload);
-                autoScoreReadyMovement.setPickupPosition();
-                if (autoScoreReadyMovement.isMovementInProgress()) {
-                    setPathState(1);
-                }
-
+                setPathState(1);
                 break;
             case 1:
-
-                if(!follower.isBusy() && !autoScoreReadyMovement.isMovementInProgress()) {
-                    follower.followPath(grabPickup1, false);
-                    autoPickupReadyMovement.setPickupPosition();
-                    if (!autoPickupReadyMovement.isMovementInProgress()) {
-                        setPathState(-1);
-                    }
+                if (!follower.isBusy()) {
+                    autoScoreReadyMovement.setPickupPosition();
+                    setPathState(2);
                 }
                 break;
             case 2:
-                    /* Since this is a pathChain, we can have Pedro hold the end point while we are scoring the sample */
-                    follower.followPath(scorePickup1);
-//                    autoScoreReadyMovement.setPickupPosition();
-                    setPathState(-1);
+                if (!autoScoreReadyMovement.isMovementInProgress()) {
+                    // we have scored the preload and retracted
+                    follower.followPath(grabPickup1);
+                    setPathState(3);
+                }
+                break;
             case 3:
-                /* This case checks the robot's position and will wait until the robot position is close (1 inch away) from the scorePose's position */
-                if(!follower.isBusy()) {
-                    /* Score Sample */
-
-                    /* Since this is a pathChain, we can have Pedro hold the end point while we are grabbing the sample */
-                    follower.followPath(grabPickup2);
-                    actionTimer.resetTimer();
+                if (!follower.isBusy()) {
+                    // we have arrived at the first sample
                     autoPickupReadyMovement.setPickupPosition();
-                    if (actionTimer.getElapsedTimeSeconds() >= 2) {
-                        setPathState(4);
-                    }
+                    setPathState(4);
                 }
                 break;
             case 4:
-                /* This case checks the robot's position and will wait until the robot position is close (1 inch away) from the pickup2Pose's position */
-                if(!follower.isBusy()) {
-                    /* Grab Sample */
-
-                    /* Since this is a pathChain, we can have Pedro hold the end point while we are scoring the sample */
-                    follower.followPath(scorePickup2,true);
-                    autoScoreReadyMovement.setPickupPosition();
+                if (!autoPickupReadyMovement.isMovementInProgress()) {
+                    // we have grabbed the first sample
+                    follower.followPath(scorePickup1);
                     setPathState(5);
                 }
                 break;
             case 5:
                 /* This case checks the robot's position and will wait until the robot position is close (1 inch away) from the scorePose's position */
-                if(!follower.isBusy()) {
-                    /* Score Sample */
-
-                    /* Since this is a pathChain, we can have Pedro hold the end point while we are grabbing the sample */
-                    follower.followPath(grabPickup3);
-                    actionTimer.resetTimer();
-                    autoPickupReadyMovementSample3.setPickupPosition();
-                    if (actionTimer.getElapsedTimeSeconds() >= 5){
-                        setPathState(6);
-                    }
-                }
-                break;
-            case 6:
-                /* This case checks the robot's position and will wait until the robot position is close (1 inch away) from the pickup3Pose's position */
-                if(!follower.isBusy()) {
-                    /* Grab Sample */
-
-                    /* Since this is a pathChain, we can have Pedro hold the end point while we are scoring the sample */
-                    follower.followPath(scorePickup3, true);
-                    autoScoreReadyMovement.setPickupPosition();
-                    setPathState(7);
-                }
-                break;
-            case 7:
-                /* This case checks the robot's position and will wait until the robot position is close (1 inch away) from the pickup3Pose's position */
-                if(!follower.isBusy()) {
-                    /* Grab Sample */
-
-                    /* Since this is a pathChain, we can have Pedro hold the end point while we are scoring the sample */
-                    follower.followPath(cycle);
-                    actionTimer.resetTimer();
-                    autoPickupReadyMovement.setPickupPosition();
-                    if (actionTimer.getElapsedTimeSeconds() >= 5){
-                        setPathState(8);
-                    }
-                }
-                break;
-            case 8:
-                /* This case checks the robot's position and will wait until the robot position is close (1 inch away) from the scorePose's position */
-                if(!follower.isBusy()) {
-                    /* Score Sample */
-
-                    /* Since this is a pathChain, we can have Pedro hold the end point while we are grabbing the sample */
-                    follower.followPath(cycleScore1,true);
-                    autoScoreReadyMovement.setPickupPosition();
-                    if (actionTimer.getElapsedTimeSeconds() >= 5){
-                        setPathState(9);
-                    }
-                }
-                break;
-            case 9:
-                /* This case checks the robot's position and will wait until the robot position is close (1 inch away) from the pickup3Pose's position */
-                if(!follower.isBusy()) {
-                    /* Grab Sample */
-
-                    /* Since this is a pathChain, we can have Pedro hold the end point while we are scoring the sample */
-                    follower.followPath(cycle2, true);
-                    autoPickupReadyMovement.setPickupPosition();
-                    if (actionTimer.getElapsedTimeSeconds() >= 5){
-                        setPathState(10);
-                    }
-                }
-               break;
-            case 10:
-                /* This case checks the robot's position and will wait until the robot position is close (1 inch away) from the scorePose's position */
-                if(!follower.isBusy()) {
-                    /* Score Sample */
-
-                    /* Since this is a pathChain, we can have Pedro hold the end point while we are grabbing the sample */
-                    follower.followPath(cycleScore2,true);
-                    autoScoreReadyMovement.setPickupPosition();
-                    setPathState(11);
-                }
-                break;
-            case 11:
-                /* This case checks the robot's position and will wait until the robot position is close (1 inch away) from the scorePose's position */
-                if(!follower.isBusy()) {
-                    /* Score Sample */
-
-                    /* Since this is a pathChain, we can have Pedro hold the end point while we are parked */
-                    follower.followPath(park,true);
-                    setPathState(12);
-                }
-                break;
-            case 12:
-                /* This case checks the robot's position and will wait until the robot position is close (1 inch away) from the scorePose's position */
-                if(!follower.isBusy()) {
-                    /* Level 1 Ascent */
-
-                    /* Set the state to a Case we won't use or define, so it just stops running an new paths */
+                if (!follower.isBusy()) {
+                    // we should be at the basket again
                     setPathState(-1);
                 }
                 break;
-            default: break;
         }
     }
 
